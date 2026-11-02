@@ -10,6 +10,7 @@ from torch import Tensor, nn
 
 from hjb import InventoryHJBParameters, InventoryHJBResult
 from model_types import FloatArray, IntArray
+from baselines import Quotes
 
 
 @dataclass(frozen=True)
@@ -135,6 +136,88 @@ class InventoryPINN:
             mean_absolute_residual=float(np.mean(np.abs(residual))),
             max_absolute_residual=float(np.max(np.abs(residual))),
             terminal_rmse=float(np.sqrt(np.mean(error[-1] ** 2))),
+        )
+
+    def quoting_policy(self, *, time_nodes: int = 201) -> HJBQuotingPolicy:
+        """Create a policy using this PINN's learned optimal offsets."""
+        return HJBQuotingPolicy(self, time_nodes=time_nodes)
+
+
+class HJBQuotingPolicy:
+    """Map learned finite-inventory offsets into the shared quoting interface."""
+
+    def __init__(self, pinn: InventoryPINN, *, time_nodes: int = 201) -> None:
+        if not isinstance(time_nodes, int) or time_nodes < 2:
+            raise ValueError("time_nodes must be an integer of at least 2")
+        self._pinn = pinn
+        self._parameters = pinn.parameters
+        self._times = np.linspace(0.0, self._parameters.horizon, time_nodes)
+        self._factors = pinn.predict_value_factor(self._times)
+        self._inventory = np.arange(
+            self._parameters.min_inventory,
+            self._parameters.max_inventory + 1,
+            dtype=np.int64,
+        )
+
+    def quote(
+        self, mid_prices: FloatArray, inventory: IntArray, time_to_horizon: float
+    ) -> Quotes:
+        mids = np.asarray(mid_prices, dtype=np.float64)
+        positions = np.asarray(inventory, dtype=np.int64)
+        if mids.shape != (1,) or positions.shape != (1,):
+            raise ValueError("the reduced HJB policy supports exactly one asset")
+        if not np.all(np.isfinite(mids)) or mids[0] <= 0:
+            raise ValueError("mid-price must be finite and positive")
+        if (
+            not np.isfinite(time_to_horizon)
+            or time_to_horizon < 0
+            or time_to_horizon > self._parameters.horizon
+        ):
+            raise ValueError("time_to_horizon must lie within the HJB horizon")
+        position = int(positions[0])
+        if position < self._parameters.min_inventory or position > self._parameters.max_inventory:
+            raise ValueError("inventory is outside configured HJB bounds")
+
+        model_time = self._parameters.horizon - time_to_horizon
+        factors = np.array(
+            [
+                np.interp(model_time, self._times, self._factors[:, index])
+                for index in range(self._inventory.size)
+            ],
+            dtype=np.float64,
+        )
+        index = position - self._parameters.min_inventory
+        eta = self._parameters.risk_aversion
+        k = self._parameters.distance_sensitivity
+        fee = self._parameters.fee_per_unit
+        maximum_distance = self._parameters.max_quote_distance
+        bid_offset = 0.0
+        ask_offset = 0.0
+        bid_enabled = position < self._parameters.max_inventory
+        ask_enabled = position > self._parameters.min_inventory
+        if position > self._parameters.min_inventory:
+            bid_offset = float(
+                np.clip(
+                    fee + np.log((k + eta) * factors[index - 1] / (k * factors[index])) / eta,
+                    0.0,
+                    maximum_distance,
+                )
+            )
+        if position < self._parameters.max_inventory:
+            ask_offset = float(
+                np.clip(
+                    fee + np.log((k + eta) * factors[index + 1] / (k * factors[index])) / eta,
+                    0.0,
+                    maximum_distance,
+                )
+            )
+        bid = np.array([max(0.0, mids[0] - bid_offset)], dtype=np.float64)
+        ask = np.array([mids[0] + ask_offset], dtype=np.float64)
+        return Quotes(
+            bid=bid,
+            ask=ask,
+            bid_enabled=np.array([bid_enabled], dtype=np.bool_),
+            ask_enabled=np.array([ask_enabled], dtype=np.bool_),
         )
 
 

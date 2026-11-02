@@ -1,7 +1,7 @@
-# Research Model: HJB-Embedded Multi-Asset Market Making
+# Research Model: HJB-Embedded Multi-Asset Statistical Arbitrage
 
-**Working title:** *Multi-Asset Market Making under Heavy-Tailed Risk: An HJB Control Framework with Adaptive State Estimation*
-**Status:** Step 1 of a staged model build. Equations define a proposed starting model; calibration values and empirical conclusions are not yet available.
+**Working title:** *Stochastic Risk Analysis for Multi-Asset Statistical Arbitrage with HJB-Embedded PINNs, Adaptive State Estimation, and AS Baselines*
+**Status:** Staged prototype. The market-making HJB and the statistical-arbitrage strategy are separate components; a unified portfolio controller has not yet been derived.
 
 ## Step 1 — Specify the mathematical control model
 
@@ -9,16 +9,16 @@ This step defines what the trading model observes, controls, and optimizes. It d
 
 ### 1.1 Research question and scope
 
-**Question:** Under the same market data, execution assumptions, costs, and position limits, does an HJB-based multi-asset quoting policy outperform a multi-asset Avellaneda–Stoikov (AS) baseline on risk-adjusted performance in ordinary and stressed markets?
+**Research direction:** Evaluate a model that selects and trades statistical relationships across assets, accounting for execution, portfolio risk, and heavy-tail/regime-change stress. The draft's concrete selection concept is to evaluate candidate opportunities and allocate among them across a multi-asset portfolio.
 
-The initial task is **market making**, not statistical arbitrage: the agent posts bids and asks for each asset and manages the inventory created by fills. Selecting assets from a cross-sectional signal or trading a mean-reverting pair would add a separate strategy and is out of scope for this first model.
+Statistical arbitrage and market making are distinct strategies. A pair strategy takes offsetting long and short positions based on a relative-value signal; the AS model posts bids and asks to earn spread while controlling inventory. They may share execution/risk infrastructure, but their signals and objectives must be evaluated separately. For the first explicit stat-arb signal, this prototype uses training-window cointegration and held-out spread mean reversion. A true integration with HJB/AKF remains future work; the current single-asset HJB does not select pairs.
 
-The comparison is separated into:
+The components are separated into:
 
-1. AS quoting policy: baseline.
-2. HJB policy: optimized quoting decisions under the same simulated or observed market and constraints.
-3. Adaptive Kalman filter (AKF): optional estimator, tested as an ablation rather than presumed to improve results.
-4. PINN: later numerical method for approximating the HJB value function. It is not itself a market model or anomaly detector.
+1. Cointegrated-pairs selector and relative-value portfolio: the initial statistical-arbitrage implementation.
+2. AS quoting policy: market-making baseline; not a statistical-arbitrage selector.
+3. HJB policy and PINN: a separate market-making control prototype, not yet integrated with pair selection.
+4. Adaptive Kalman filter (AKF): state estimator; its impact on statistical-arbitrage decisions still needs an ablation.
 
 ### 1.2 State, controls, and quotes
 
@@ -265,7 +265,46 @@ The PINN approximates the positive transformed factor \(v(t,q)\) from Step 4, no
 
 PyTorch is now declared alongside NumPy and SciPy in [`requirements.txt`](./requirements.txt). The current implementation is intentionally limited to the reduced one-asset diffusion model; it does not add jumps, multi-asset state, regimes, AKF integration, or a portfolio policy.
 
-## Later steps (not implemented)
+## Exploratory market-making scenario comparison (not statistical arbitrage)
 
-6. Evaluate both policies out of sample in ordinary, heavy-tail, and regime-change scenarios.
-7. Report net P&L, maximum drawdown and duration, inventory variance, spread capture, fill rate, order-to-trade ratio, and HJB approximation errors. Keep numerical residuals separate from financial performance.
+**Implemented in** [`evaluation.py`](./evaluation.py), runnable through [`run_evaluation.py`](./run_evaluation.py), with tests in [`test_evaluation.py`](./test_evaluation.py). The learned PINN offsets are connected to the existing execution simulator through `HJBQuotingPolicy` in [`pinn.py`](./pinn.py).
+
+The evaluation currently supports one synthetic asset only. It pairs the AS and HJB-PINN policies on identical seeded price paths and fill random seeds. Scenarios are:
+
+- **Ordinary:** arithmetic Brownian price increments with \(\sigma=0.2\).
+- **Heavy-tail stress:** the same diffusion plus compound Poisson jumps (\(\rho=2\) per horizon), with symmetric Pareto magnitudes, shape \(3\), scale \(0.02\), truncated at log magnitude \(0.2\). This is a finite truncated jump stress, not a claim about asymptotic tail behavior.
+- **Regime-change stress:** volatility doubles halfway through the horizon; the policies do not receive a regime signal.
+
+The reproducible run command is `python3 run_evaluation.py`. It uses 252 intervals over a unit horizon, initial mid-price \(100\), initial cash \(10{,}000\), fill rate \(A=5\), distance sensitivity \(k=1.5\), risk aversion \(\eta=0.1\), inventory limits \([-5,5]\), per-unit fee \(0.001\), PINN seed \(19\), and scenario seeds \((11,23,37,51,79)\). The PINN uses 2,000 training iterations and its HJB assumptions match the ordinary scenario; the jump and volatility-shift scenarios are out-of-model stresses.
+
+Observed terminal P&L over these five synthetic seeds:
+
+| Scenario | AS mean (sample SD) | HJB-PINN mean (sample SD) | Paired HJB-PINN minus AS mean (sample SD) |
+|---|---:|---:|---:|
+| Ordinary | 2.018 (1.574) | 1.970 (1.489) | -0.048 (0.087) |
+| Heavy-tail stress | 5.123 (9.243) | 5.484 (9.398) | 0.361 (0.829) |
+| Regime-change stress | 2.062 (1.690) | 2.047 (1.675) | -0.015 (0.016) |
+
+These are exploratory results, not evidence that HJB-PINN beats AS: the sample is tiny, synthetic, and includes only one asset. The paired differences are small relative to their run-to-run variation, and the heavy-tail case is not represented in the policy's diffusion-only HJB. The trained PINN on this larger \([-5,5]\) inventory/horizon configuration also has substantially higher approximation error than the earlier five-state smoke test; the runner prints its reference-comparison diagnostics before the policy results. Improve and validate PINN accuracy before drawing policy conclusions.
+
+## Step 6 — Multi-asset statistical arbitrage via cointegrated pairs
+
+**Implemented in** [`stat_arb.py`](./stat_arb.py), with a reproducible synthetic run in [`run_stat_arb.py`](./run_stat_arb.py) and tests in [`test_stat_arb.py`](./test_stat_arb.py).
+
+The selector examines all candidate asset pairs using the training window only. For each oriented pair it estimates
+
+\[
+\log P_y = a + \beta \log P_x + \epsilon,
+\]
+
+tests the residual relation with the Engle–Granger two-step cointegration test, adjusts the candidate p-values with Benjamini–Hochberg, estimates spread half-life, and ranks eligible pairs. It greedily selects up to a configured number of **non-overlapping** pairs, so one asset is not assigned to multiple independent pairs in this initial portfolio implementation. If no pair meets the declared filters, it raises an explicit error rather than silently trading.
+
+On held-out observations, the calibrated spread is standardized using training mean and standard deviation. The strategy enters a long-spread position below \(-z_{\rm entry}\), or a short-spread position above \(+z_{\rm entry}\), and exits after reversion through the configured exit band. It uses a fixed gross-notional budget per selected pair, trades both legs, charges transaction costs on turnover, and liquidates remaining holdings at the test horizon. Parameters, pair identities, hedge ratios, and spread statistics are never refit on test data.
+
+This is a simple pairs-trading baseline, not the requested final HJB-embedded multi-asset agent. Cointegration tests can be sensitive to window choice and multiple testing; the FDR adjustment does not remove all model-selection bias. The mean-reversion half-life and entry/exit thresholds must be selected without using the final test window. Short availability, borrow costs, market impact, and live execution are not modeled.
+
+`python3 run_stat_arb.py` generates two synthetic cointegrated pairs and one unrelated asset, fits on the first 750 observations, and evaluates on the next 500 observations for five seeds. It selected both intended pairs in each run. Capital-relative test P&L averaged \(20{,}358.75\) with sample standard deviation \(5{,}517.94\) from initial capital \(100{,}000\), after average transaction costs of about \(203.56\). Because the synthetic generator explicitly creates mean-reverting pairs, this verifies the pipeline against known structure only; it is not evidence of real-market profitability. It also lacks a realistic borrow/short-sale model and a full set of benchmark strategies.
+
+## Step 7 — Performance and risk report (not yet implemented)
+
+Report held-out net P&L, maximum drawdown and duration, exposure/inventory variability, turnover and transaction costs, pair selection stability, and HJB approximation errors. Separate market-making metrics (such as spread capture and order-to-trade ratio) from statistical-arbitrage metrics. Keep numerical residuals separate from financial performance.

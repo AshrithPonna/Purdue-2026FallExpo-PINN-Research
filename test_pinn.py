@@ -53,6 +53,26 @@ class InventoryPINNTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "within the HJB horizon"):
             pinn.predict_value_factor(np.array([-0.01]))
 
+    def test_learned_quotes_respect_inventory_edges(self) -> None:
+        pinn = train_inventory_pinn(
+            self.parameters,
+            PINNTrainingConfig(
+                iterations=10,
+                collocation_times=4,
+                hidden_width=8,
+                hidden_layers=1,
+                seed=2,
+            ),
+        )
+        policy = pinn.quoting_policy(time_nodes=11)
+        at_maximum = policy.quote(np.array([100.0]), np.array([2]), 0.5)
+        at_minimum = policy.quote(np.array([100.0]), np.array([-2]), 0.5)
+
+        self.assertFalse(at_maximum.bid_enabled[0])
+        self.assertTrue(at_maximum.ask_enabled[0])
+        self.assertTrue(at_minimum.bid_enabled[0])
+        self.assertFalse(at_minimum.ask_enabled[0])
+
 
 if __name__ == "__main__":
     unittest.main()
