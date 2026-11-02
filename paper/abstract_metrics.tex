@@ -1,0 +1,27 @@
+\begin{table}[htbp]
+\centering
+\caption{Synthetic stress-test metrics; these are not live-market estimates.}
+\label{tab:synthetic-abstract-metrics}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrrrrrrrrr}
+\hline
+Scenario & Controller & Mean P\&L & Lower-tail 5\% P\&L & Inventory variance & Spread capture & Quote/fill proxy & Mean drawdown & 95th-pctl drawdown & Drawdown duration & HJB residual \\
+\hline
+Volatility shift & Threshold, no AKF de-risking & $27,976$ & $21,422$ & 0.0231 & 0.613\% & 3.14 & 1.22\% & 2.42\% & 19.8 & --- \\
+Volatility shift & Threshold + AKF de-risking & $19,345$ & $14,121$ & 0.0100 & 0.478\% & 3.16 & 0.67\% & 1.14\% & 32.4 & --- \\
+Volatility shift & HJB-PINN, no fee term + AKF & $15,328$ & $9,901$ & 0.0303 & 0.291\% & 3.03 & 1.07\% & 1.54\% & 44.8 & 0.00626 \\
+Volatility shift & HJB-PINN, fee-aware + AKF & $15,548$ & $10,210$ & 0.0306 & 0.300\% & 3.03 & 1.07\% & 1.56\% & 45.3 & 0.00627 \\
+Heavy-tail & Threshold, no AKF de-risking & $27,796$ & $22,258$ & 0.0232 & 0.614\% & 3.14 & 1.32\% & 3.15\% & 20.1 & --- \\
+Heavy-tail & Threshold + AKF de-risking & $19,711$ & $14,870$ & 0.0101 & 0.495\% & 3.15 & 0.73\% & 1.46\% & 31.8 & --- \\
+Heavy-tail & HJB-PINN, no fee term + AKF & $15,441$ & $9,696$ & 0.0305 & 0.304\% & 3.02 & 1.19\% & 2.29\% & 50.4 & 0.00626 \\
+Heavy-tail & HJB-PINN, fee-aware + AKF & $15,699$ & $9,960$ & 0.0308 & 0.314\% & 3.02 & 1.19\% & 2.27\% & 49.9 & 0.00627 \\
+Cointegration break & Threshold, no AKF de-risking & $20,637$ & $-9,166$ & 0.0782 & 0.654\% & 3.18 & 7.27\% & 19.66\% & 82.3 & --- \\
+Cointegration break & Threshold + AKF de-risking & $13,099$ & $5,371$ & 0.0101 & 0.374\% & 3.15 & 1.80\% & 4.49\% & 127.4 & --- \\
+Cointegration break & HJB-PINN, no fee term + AKF & $10,193$ & $-3,878$ & 0.0448 & 0.274\% & 3.04 & 3.73\% & 9.32\% & 143.2 & 0.00626 \\
+Cointegration break & HJB-PINN, fee-aware + AKF & $10,404$ & $-3,641$ & 0.0453 & 0.281\% & 3.04 & 3.73\% & 9.06\% & 142.8 & 0.00627 \\
+\hline
+\end{tabular}%
+}
+\par\smallskip
+\footnotesize Inventory variance is for normalized pair positions. Spread capture and quote/fill are simulator proxies; quote/fill is not an exchange order-to-trade ratio. HJB residual is a training-fit PDE diagnostic and is not applicable to threshold controllers. Results use one synthetic training fit.
+\end{table}
