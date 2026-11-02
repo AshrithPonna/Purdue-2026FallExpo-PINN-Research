@@ -11,14 +11,15 @@ This step defines what the trading model observes, controls, and optimizes. It d
 
 **Research direction:** Evaluate a model that selects and trades statistical relationships across assets, accounting for execution, portfolio risk, and heavy-tail/regime-change stress. The draft's concrete selection concept is to evaluate candidate opportunities and allocate among them across a multi-asset portfolio.
 
-Statistical arbitrage and market making are distinct strategies. A pair strategy takes offsetting long and short positions based on a relative-value signal; the AS model posts bids and asks to earn spread while controlling inventory. They may share execution/risk infrastructure, but their signals and objectives must be evaluated separately. For the first explicit stat-arb signal, this prototype uses training-window cointegration and held-out spread mean reversion. A true integration with HJB/AKF remains future work; the current single-asset HJB does not select pairs.
+Statistical arbitrage and market making are distinct strategies. A pair strategy takes offsetting long and short positions based on a relative-value signal; the AS model posts bids and asks to earn spread while controlling inventory. They may share execution/risk infrastructure, but their signals and objectives must be evaluated separately. For the first explicit stat-arb signal, this prototype uses training-window cointegration and held-out spread mean reversion. Step 8 adds a separate pair-level HJB/PINN and AKF pipeline; the single-asset market-making HJB remains a separate baseline and does not select pairs.
 
 The components are separated into:
 
 1. Cointegrated-pairs selector and relative-value portfolio: the initial statistical-arbitrage implementation.
 2. AS quoting policy: market-making baseline; not a statistical-arbitrage selector.
-3. HJB policy and PINN: a separate market-making control prototype, not yet integrated with pair selection.
-4. Adaptive Kalman filter (AKF): state estimator; its impact on statistical-arbitrage decisions still needs an ablation.
+3. Pair-level HJB/PINN: a reduced spread-and-inventory control model used by the integrated statistical-arbitrage experiment in Step 8.
+4. Single-asset HJB policy and PINN: a separate market-making control prototype; not used by the pair strategy.
+5. Adaptive Kalman filter (AKF): causal state estimator; it supplies filtered log prices to pair calibration and held-out signals in Step 8.
 
 ### 1.2 State, controls, and quotes
 
@@ -301,7 +302,7 @@ tests the residual relation with the Engle–Granger two-step cointegration test
 
 On held-out observations, the calibrated spread is standardized using training mean and standard deviation. The strategy enters a long-spread position below \(-z_{\rm entry}\), or a short-spread position above \(+z_{\rm entry}\), and exits after reversion through the configured exit band. It uses a fixed gross-notional budget per selected pair, trades both legs, charges transaction costs on turnover, and liquidates remaining holdings at the test horizon. Parameters, pair identities, hedge ratios, and spread statistics are never refit on test data.
 
-This is a simple pairs-trading baseline, not the requested final HJB-embedded multi-asset agent. Cointegration tests can be sensitive to window choice and multiple testing; the FDR adjustment does not remove all model-selection bias. The mean-reversion half-life and entry/exit thresholds must be selected without using the final test window. Short availability, borrow costs, market impact, and live execution are not modeled.
+This threshold-based implementation is the pairs-trading baseline. Step 8 adds a separate HJB-controlled variant. Cointegration tests can be sensitive to window choice and multiple testing; the FDR adjustment does not remove all model-selection bias. The mean-reversion half-life and entry/exit thresholds must be selected without using the final test window. Short availability, borrow costs, market impact, and live execution are not modeled.
 
 `python3 run_stat_arb.py` generates two synthetic cointegrated pairs and one unrelated asset, fits on the first 750 observations, and evaluates on the next 500 observations for five seeds. It selected both intended pairs in each run. Capital-relative test P&L averaged \(20{,}358.75\) with sample standard deviation \(5{,}517.94\) from initial capital \(100{,}000\), after average transaction costs of about \(203.56\). Because the synthetic generator explicitly creates mean-reverting pairs, this verifies the pipeline against known structure only; it is not evidence of real-market profitability. It also lacks a realistic borrow/short-sale model and a full set of benchmark strategies.
 
@@ -339,4 +340,43 @@ The runner also reports about 249.6 quote-side opportunities per fill in the ord
 
 For the configuration used by the market-making runner, the trained PINN's reference comparison reported value-factor RMSE \(0.10653\), maximum value-factor error \(0.21405\), mean absolute HJB residual \(0.04480\), maximum absolute HJB residual \(0.12505\), and terminal-condition RMSE \(0.00554\). These are numerical approximation diagnostics, not portfolio performance metrics. They indicate that PINN accuracy still needs improvement before using it to support strong policy-performance claims.
 
-To reproduce and test the reports, run `python3 run_stat_arb.py`, `python3 run_evaluation.py`, and `python3 -m unittest -v`. This step closes the current prototype reporting phase only; it does not integrate the single-asset PINN/AS policy into the multi-asset statistical-arbitrage strategy or validate it on historical/out-of-sample market data.
+To reproduce and test the reports, run `python3 run_stat_arb.py`, `python3 run_evaluation.py`, `python3 run_integrated_stat_arb.py`, and `python3 -m unittest -v`. These experiments remain synthetic; none validates performance on historical or live market data.
+
+## Step 8 — AKF-filtered pair-level HJB-PINN
+
+Implemented separately from the market-making model in [`integrated_stat_arb.py`](./integrated_stat_arb.py), [`pair_hjb.py`](./pair_hjb.py), and [`pair_pinn.py`](./pair_pinn.py). The reproducible synthetic run is [`run_integrated_stat_arb.py`](./run_integrated_stat_arb.py); integration tests are in [`test_integrated_stat_arb.py`](./test_integrated_stat_arb.py) and [`test_pair_hjb.py`](./test_pair_hjb.py).
+
+The pipeline causally filters observed log prices using the existing per-asset adaptive Kalman filters, then splits the filtered observations. Cointegration selection, spread calibration, and OU parameter estimation use only the training segment. The held-out filter estimates are generated in timestamp order; no later observation is used to revise an earlier estimate. The fitted pair identities and hedge ratios are kept fixed during the test segment.
+
+For each selected pair, the training residual is standardized to \(z\), and its AR(1) persistence estimates the OU speed \(\kappa\); the residual innovation estimates \(\sigma_z\). The reduced state is standardized spread \(z\) and normalized pair inventory \(q\). The controller chooses a bounded trading rate \(u=dq/dt\), and solves
+
+\[
+\partial_t V-\kappa z\,\partial_z V
++\frac{1}{2}\sigma_z^2\partial_{zz}V
++\max_{|u|\le u_{\max}}\left[
+u\,\partial_q V
+-q\,s\kappa z
+-\frac{\lambda}{2}q^2
+-\frac{c}{2}u^2
+\right]=0,
+\]
+
+with terminal value \(V(T,z,q)=-\lambda q^2/2\). Here \(s\) is the training spread scale, \(\lambda\) the inventory-risk penalty, and \(c\) the quadratic trading-rate penalty. \(q\,s(-\kappa z)\) is the expected spread mark-to-market drift. The HJB is a reduced, risk-adjusted OU control model; it does not include jump risk, a full multi-asset covariance state, borrow availability, or detailed execution/market impact. Per-turnover transaction fees are charged by the backtest, but are not the quadratic execution penalty used in the HJB.
+
+The numerical HJB reference is solved on a finite \(z,q,t\) grid. Its value surface supplies a supervised data term to the PINN, alongside the HJB residual and terminal condition. Consequently, PINN-vs-reference errors measure approximation of this numerical surface, not an independent proof that either model matches the market. The PINN inventory gradient provides the trading rate. Each non-overlapping pair receives an equal gross-notional budget; normalized inventory and the portfolio leverage cap constrain exposure, and remaining holdings are liquidated at the end.
+
+`python3 run_integrated_stat_arb.py` selects one intended pair from a synthetic 750-observation training segment and trades 500 held-out intervals from initial capital \(100{,}000\). The observed run reported:
+
+| Metric | Result |
+|---|---:|
+| Net held-out P&L | 4,924.42 |
+| Maximum drawdown | 1,357.93 |
+| Maximum drawdown / initial capital | 1.3570% |
+| Turnover | 1,096,119.34 |
+| Transaction costs | 109.61 |
+| Maximum gross exposure | 60,020.99 |
+| PINN value RMSE vs. numerical HJB grid | 0.015448 |
+| PINN maximum value error | 0.060283 |
+| PINN mean absolute PDE residual | 0.006265 |
+
+These are a one-seed synthetic sanity run, not a measured improvement over Step 6 or evidence of expected market returns. The new strategy has not yet been ablated against raw prices, the threshold-based pair strategy, or a numerical-HJB policy; its risk and trading penalties have not been calibrated on real data. The AKF filters each asset independently and does not explicitly estimate a market regime. A next research phase should validate parameter selection with nested walk-forward tests, realistic borrow/impact/fill models, more seeds and stress cases, and a PINN-to-reference accuracy threshold before interpreting financial results.
