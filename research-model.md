@@ -188,9 +188,25 @@ Do not invent empirical values. Record the asset universe, price-data source and
 
 The initial execution simulator is intentionally discrete and simplified: at most one unit can fill per side and asset per interval; there are no queue positions, partial fills, cancellations, leverage, or cross-asset-dependent fill events. Its outputs are simulation results under declared assumptions, not evidence of live-market performance. `ASParameters.volatility` is the per-square-root-time volatility used by the quoting policy; `dt` and the input price interval must use consistent time units.
 
+## Step 3 — Adaptive Kalman state estimation
+
+**Implemented in** [`initial.py`](./initial.py), with validation in [`test_initial.py`](./test_initial.py).
+
+- `simulate_log_price_observations` creates reproducible noisy log-price observations from simulated market truth using a declared measurement-noise variance and seed.
+- `AdaptiveKalmanFilter` estimates each asset's latent log price online using independent scalar filters. It uses a random-walk state transition, fixed measurement variance, and adapts process variance using innovation covariance matching:
+
+\[
+Q_k=(1-d)Q_{k-1}
++d\left(K_k^2 e_k^2+P_{k|k}-P_{k-1|k-1}\right),
+\]
+
+where \(e_k\) is the one-step innovation, \(K_k\) the Kalman gain, \(P\) the state-estimate variance, and \(d\) the adaptation rate. The implementation floors \(Q_k\) at a positive configured minimum to prevent invalid negative process variance. It emits filtered log prices, their exponentiated prices, innovations, and the process-variance history; each estimate uses only current and earlier observations.
+- Validation compares filtered log-price RMSE against the unfiltered noisy observations on a seeded synthetic path with known latent prices. This measures state-estimation error only; it is not evidence that the filter improves trading returns.
+
+This is a simple adaptive random-walk filter, not an EKF/SKF comparison, a heavy-tail-robust filter, or a bull/bear regime detector. The measurement variance is fixed, assets are filtered independently, and adaptation parameters need calibration. The filter has not yet been wired into the AS backtest as a separately isolated policy input; doing so requires keeping observed execution prices distinct from estimated prices used for quotes.
+
 ## Later steps (not implemented)
 
-3. Add and validate the AKF against known simulated latent states; compare with and without it.
 4. Numerically solve a low-dimensional HJB reference problem and derive the HJB residual and boundary conditions.
 5. Train a PINN to approximate the value function and compare it with the numerical reference.
 6. Evaluate both policies out of sample in ordinary, heavy-tail, and regime-change scenarios.
