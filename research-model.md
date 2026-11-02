@@ -179,7 +179,13 @@ Do not invent empirical values. Record the asset universe, price-data source and
 
 ## Step 2 — Simulator/data interface and AS baseline
 
-**Implemented in** [`initial.py`](./initial.py), with tests in [`test_initial.py`](./test_initial.py).
+**Implemented in** [`initial.py`](./initial.py), with focused modules and tests:
+
+- Data validation and simulation: [`market_data.py`](./market_data.py), tested in [`test_market_data.py`](./test_market_data.py).
+- AS model and policy: [`baselines.py`](./baselines.py), tested in [`test_baselines.py`](./test_baselines.py).
+- Execution and portfolio bookkeeping: [`backtest.py`](./backtest.py), tested in [`test_backtest.py`](./test_backtest.py).
+- Adaptive state estimation: [`filters.py`](./filters.py), tested in [`test_filters.py`](./test_filters.py).
+- Shared array aliases live in [`model_types.py`](./model_types.py). [`initial.py`](./initial.py) remains as a compatibility re-export for the original imports; new code should import from the focused modules directly.
 
 - `MarketData` accepts aligned mid-price arrays or loads long-form CSV data with `timestamp`, `symbol`, and `mid_price` columns. It rejects duplicate or missing timestamp/asset rows, invalid prices, and non-increasing timestamps.
 - `simulate_gbm` generates a reproducible correlated log-price diffusion from explicit drift, covariance, time step, and seed inputs. This is a baseline simulator; it does not yet include jumps or regime changes.
@@ -190,7 +196,7 @@ The initial execution simulator is intentionally discrete and simplified: at mos
 
 ## Step 3 — Adaptive Kalman state estimation
 
-**Implemented in** [`initial.py`](./initial.py), with validation in [`test_initial.py`](./test_initial.py).
+**Implemented in** [`filters.py`](./filters.py), with validation in [`test_filters.py`](./test_filters.py).
 
 - `simulate_log_price_observations` creates reproducible noisy log-price observations from simulated market truth using a declared measurement-noise variance and seed.
 - `AdaptiveKalmanFilter` estimates each asset's latent log price online using independent scalar filters. It uses a random-walk state transition, fixed measurement variance, and adapts process variance using innovation covariance matching:
