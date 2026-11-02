@@ -6,9 +6,9 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
+from combined_execution import ASPairExecutionResult, execute_pair_targets_with_as
 from filters import AdaptiveKalmanFilter, FilterResult
 from market_data import MarketData
-from model_types import FloatArray
 from pair_hjb import PairHJBParameters, PairHJBResult, solve_pair_hjb
 from pair_pinn import (
     PairInventoryPINN,
@@ -46,6 +46,14 @@ class IntegratedStatArbConfig:
     hjb_time_steps: int = 51
     hjb_z_points: int = 41
     hjb_inventory_points: int = 11
+    execution_dt: float = 1.0
+    as_risk_aversion: float = 0.1
+    as_arrival_rate: float = 1.0
+    as_distance_sensitivity: float = 100.0
+    maximum_inventory_slots: int = 10
+    volatility_regime_threshold: float = 1.5
+    volatility_regime_cap: float = 3.0
+    execution_seed: int = 42
 
     def __post_init__(self) -> None:
         positive = (
@@ -57,6 +65,27 @@ class IntegratedStatArbConfig:
         )
         if any(not np.isfinite(value) or value <= 0 for value in positive):
             raise ValueError("integrated-control parameters must be finite and positive")
+        execution_values = (
+            self.execution_dt,
+            self.as_risk_aversion,
+            self.as_arrival_rate,
+            self.as_distance_sensitivity,
+            self.volatility_regime_threshold,
+            self.volatility_regime_cap,
+        )
+        if any(not np.isfinite(value) or value <= 0 for value in execution_values):
+            raise ValueError("AS execution parameters must be finite and positive")
+        if (
+            not isinstance(self.maximum_inventory_slots, int)
+            or self.maximum_inventory_slots < 1
+        ):
+            raise ValueError("maximum_inventory_slots must be a positive integer")
+        if self.volatility_regime_threshold <= 1:
+            raise ValueError("volatility_regime_threshold must exceed one")
+        if self.volatility_regime_cap < self.volatility_regime_threshold:
+            raise ValueError("volatility_regime_cap must not be below its threshold")
+        if not isinstance(self.execution_seed, int) or self.execution_seed < 0:
+            raise ValueError("execution_seed must be a nonnegative integer")
         for value, name, minimum in (
             (self.hjb_time_steps, "hjb_time_steps", 3),
             (self.hjb_z_points, "hjb_z_points", 5),
@@ -76,6 +105,7 @@ class IntegratedStatArbRun:
     pair_hjb_references: tuple[PairHJBResult, ...]
     pair_pinns: tuple[PairInventoryPINN, ...]
     pinn_comparisons: tuple[PairPINNComparison, ...]
+    execution: ASPairExecutionResult
 
 
 def _pair_hjb_parameters(
@@ -161,7 +191,7 @@ def run_integrated_stat_arb(
         parameters = _pair_hjb_parameters(
             pair,
             training_data,
-            float(test_data.steps),
+            float(test_data.steps * integration_config.execution_dt),
             integration_config,
         )
         reference = solve_pair_hjb(
@@ -186,127 +216,33 @@ def run_integrated_stat_arb(
         pinns.append(pinn)
         comparisons.append(pinn.compare(reference))
 
-    result = _backtest_hjb_pairs(
+    execution = execute_pair_targets_with_as(
         model,
         test_data,
-        pinns,
+        tuple(pinns),
+        filter_result.process_variances[
+            training_observations - 1 :
+        ],
+        training_process_variances=filter_result.process_variances[
+            :training_observations
+        ],
         initial_capital=initial_capital,
         maximum_inventory=integration_config.maximum_inventory,
+        dt=integration_config.execution_dt,
+        risk_aversion=integration_config.as_risk_aversion,
+        arrival_rate=integration_config.as_arrival_rate,
+        distance_sensitivity=integration_config.as_distance_sensitivity,
+        maximum_inventory_slots=integration_config.maximum_inventory_slots,
+        regime_threshold=integration_config.volatility_regime_threshold,
+        regime_multiplier_cap=integration_config.volatility_regime_cap,
+        seed=integration_config.execution_seed,
     )
     return IntegratedStatArbRun(
         model=model,
-        result=result,
+        result=execution.portfolio,
         filter_result=filter_result,
         pair_hjb_references=tuple(references),
         pair_pinns=tuple(pinns),
         pinn_comparisons=tuple(comparisons),
-    )
-
-
-def _backtest_hjb_pairs(
-    model: StatArbModel,
-    test_data: MarketData,
-    policies: list[PairInventoryPINN],
-    *,
-    initial_capital: float,
-    maximum_inventory: float,
-) -> StatArbResult:
-    if test_data.symbols != model.symbols:
-        raise ValueError("test symbols must match training symbols in order")
-    if len(policies) != len(model.pairs):
-        raise ValueError("one HJB-PINN policy is required per selected pair")
-    symbol_indices = {symbol: index for index, symbol in enumerate(test_data.symbols)}
-    pair_count = len(model.pairs)
-    time_count, asset_count = test_data.mid_prices.shape
-    equity = np.empty(time_count, dtype=np.float64)
-    cash_history = np.empty(time_count, dtype=np.float64)
-    holdings_history = np.zeros((time_count, asset_count), dtype=np.float64)
-    gross_exposure = np.zeros(time_count, dtype=np.float64)
-    zscores = np.empty((time_count, pair_count), dtype=np.float64)
-    pair_positions = np.zeros((time_count, pair_count), dtype=np.float64)
-    turnover = np.zeros(time_count, dtype=np.float64)
-    transaction_costs = np.zeros(time_count, dtype=np.float64)
-    pair_holdings = np.zeros((asset_count, pair_count), dtype=np.float64)
-    holdings = np.zeros(asset_count, dtype=np.float64)
-    cash = float(initial_capital)
-    pair_budget = initial_capital * model.config.gross_leverage / pair_count
-    fee_rate = model.config.transaction_cost_bps / 10_000.0
-    positions = np.zeros(pair_count, dtype=np.float64)
-    horizon = float(test_data.steps)
-
-    for time_index, prices in enumerate(test_data.mid_prices):
-        for pair_index, (pair, policy) in enumerate(zip(model.pairs, policies)):
-            y_index = symbol_indices[pair.asset_y]
-            x_index = symbol_indices[pair.asset_x]
-            spread = (
-                np.log(prices[y_index])
-                - pair.intercept
-                - pair.hedge_ratio * np.log(prices[x_index])
-            )
-            zscore = (spread - pair.spread_mean) / pair.spread_std
-            zscores[time_index, pair_index] = zscore
-            if time_index == test_data.steps:
-                position = 0.0
-            else:
-                time_to_horizon = horizon - time_index
-                rate = policy.trading_rate(
-                    time_to_horizon,
-                    zscore,
-                    positions[pair_index],
-                )
-                position = float(
-                    np.clip(
-                        positions[pair_index] + rate,
-                        -maximum_inventory,
-                        maximum_inventory,
-                    )
-                )
-            positions[pair_index] = position
-            pair_positions[time_index, pair_index] = position
-            y_notional = pair_budget / (1.0 + abs(pair.hedge_ratio))
-            pair_holdings[:, pair_index] = 0.0
-            pair_holdings[y_index, pair_index] = (
-                position * y_notional / prices[y_index]
-            )
-            pair_holdings[x_index, pair_index] = (
-                -position * pair.hedge_ratio * y_notional / prices[x_index]
-            )
-
-        target_holdings = pair_holdings.sum(axis=1)
-        trade_delta = target_holdings - holdings
-        step_turnover = float(np.sum(np.abs(trade_delta * prices)))
-        step_cost = fee_rate * step_turnover
-        cash -= float(trade_delta @ prices) + step_cost
-        holdings = target_holdings
-        equity[time_index] = cash + float(holdings @ prices)
-        gross_exposure[time_index] = float(np.sum(np.abs(holdings * prices)))
-        cash_history[time_index] = cash
-        holdings_history[time_index] = holdings
-        turnover[time_index] = step_turnover
-        transaction_costs[time_index] = step_cost
-
-    for array in (
-        equity,
-        cash_history,
-        holdings_history,
-        gross_exposure,
-        zscores,
-        pair_positions,
-        turnover,
-        transaction_costs,
-    ):
-        array.setflags(write=False)
-    return StatArbResult(
-        timestamps=test_data.timestamps,
-        symbols=test_data.symbols,
-        selected_pairs=model.pairs,
-        initial_capital=float(initial_capital),
-        equity=equity,
-        cash=cash_history,
-        holdings=holdings_history,
-        gross_exposure=gross_exposure,
-        zscores=zscores,
-        pair_positions=pair_positions,
-        turnover=turnover,
-        transaction_costs=transaction_costs,
+        execution=execution,
     )

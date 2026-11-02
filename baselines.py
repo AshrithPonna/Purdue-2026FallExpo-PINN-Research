@@ -89,6 +89,45 @@ class QuotingPolicy(Protocol):
         """Return one bid and ask quote per asset."""
 
 
+def avellaneda_stoikov_offsets(
+    volatility: FloatArray,
+    risk_aversion: FloatArray,
+    distance_sensitivity: FloatArray,
+    inventory_skew: FloatArray,
+    time_to_horizon: float,
+) -> tuple[FloatArray, FloatArray]:
+    """Compute nonnegative AS quote offsets from risk and inventory skew."""
+    sigma = np.asarray(volatility, dtype=np.float64)
+    gamma = np.asarray(risk_aversion, dtype=np.float64)
+    sensitivity = np.asarray(distance_sensitivity, dtype=np.float64)
+    skew = np.asarray(inventory_skew, dtype=np.float64)
+    if (
+        sigma.ndim != 1
+        or gamma.shape != sigma.shape
+        or sensitivity.shape != sigma.shape
+        or skew.shape != sigma.shape
+        or not np.all(np.isfinite(sigma))
+        or np.any(sigma < 0)
+        or not np.all(np.isfinite(gamma))
+        or np.any(gamma <= 0)
+        or not np.all(np.isfinite(sensitivity))
+        or np.any(sensitivity <= 0)
+        or not np.all(np.isfinite(skew))
+        or not np.isfinite(time_to_horizon)
+        or time_to_horizon < 0
+    ):
+        raise ValueError("AS offset inputs must be finite and have valid dimensions")
+    variance = sigma**2
+    half_spread = (
+        0.5 * gamma * variance * time_to_horizon
+        + np.log1p(gamma / sensitivity) / gamma
+    )
+    return (
+        np.maximum(0.0, half_spread + skew),
+        np.maximum(0.0, half_spread - skew),
+    )
+
+
 @dataclass(frozen=True)
 class AvellanedaStoikov:
     """Inventory-aware AS policy with non-crossing quote and inventory limits."""
@@ -110,15 +149,17 @@ class AvellanedaStoikov:
         if np.any(positions < params.min_inventory) or np.any(positions > params.max_inventory):
             raise ValueError("inventory is outside configured bounds")
 
-        gamma = params.risk_aversion
-        variance = params.volatility**2
-        inventory_skew = positions * gamma * variance * time_to_horizon
-        half_spread = (
-            0.5 * gamma * variance * time_to_horizon
-            + np.log1p(gamma / params.distance_sensitivity) / gamma
+        gamma = np.full(params.asset_count, params.risk_aversion)
+        inventory_skew = (
+            positions * gamma * params.volatility**2 * time_to_horizon
         )
-        bid_offset = np.maximum(0.0, half_spread + inventory_skew)
-        ask_offset = np.maximum(0.0, half_spread - inventory_skew)
+        bid_offset, ask_offset = avellaneda_stoikov_offsets(
+            params.volatility,
+            gamma,
+            params.distance_sensitivity,
+            inventory_skew,
+            time_to_horizon,
+        )
         bid = np.maximum(0.0, mids - bid_offset)
         ask = mids + ask_offset
         bid_enabled = positions < params.max_inventory

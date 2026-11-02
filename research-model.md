@@ -1,7 +1,7 @@
 # Research Model: HJB-Embedded Multi-Asset Statistical Arbitrage
 
 **Working title:** *Stochastic Risk Analysis for Multi-Asset Statistical Arbitrage with HJB-Embedded PINNs, Adaptive State Estimation, and AS Baselines*
-**Status:** Staged prototype. The market-making HJB and the statistical-arbitrage strategy are separate components; a unified portfolio controller has not yet been derived.
+**Status:** Runnable integrated research prototype. AKF-filtered pair signals feed pair-level HJB-PINN inventory targets, which are executed with target-aware AS quotes. The pair HJBs remain separable rather than one jointly solved portfolio PDE, and results are synthetic only.
 
 ## Step 1 — Specify the mathematical control model
 
@@ -11,7 +11,7 @@ This step defines what the trading model observes, controls, and optimizes. It d
 
 **Research direction:** Evaluate a model that selects and trades statistical relationships across assets, accounting for execution, portfolio risk, and heavy-tail/regime-change stress. The draft's concrete selection concept is to evaluate candidate opportunities and allocate among them across a multi-asset portfolio.
 
-Statistical arbitrage and market making are distinct strategies. A pair strategy takes offsetting long and short positions based on a relative-value signal; the AS model posts bids and asks to earn spread while controlling inventory. They may share execution/risk infrastructure, but their signals and objectives must be evaluated separately. For the first explicit stat-arb signal, this prototype uses training-window cointegration and held-out spread mean reversion. Step 8 adds a separate pair-level HJB/PINN and AKF pipeline; the single-asset market-making HJB remains a separate baseline and does not select pairs.
+Statistical arbitrage and market making are distinct strategies. A pair strategy takes offsetting long and short positions based on a relative-value signal; the AS model posts bids and asks to earn spread while controlling inventory. They may share execution/risk infrastructure, but their signals and objectives must be evaluated separately. For the first explicit stat-arb signal, this prototype uses training-window cointegration and held-out spread mean reversion. Step 8 uses AS as the simulated execution layer for HJB pair targets; the single-asset market-making HJB remains a separate baseline and does not select pairs.
 
 The components are separated into:
 
@@ -344,7 +344,7 @@ To reproduce and test the reports, run `python3 run_stat_arb.py`, `python3 run_e
 
 ## Step 8 — AKF-filtered pair-level HJB-PINN
 
-Implemented separately from the market-making model in [`integrated_stat_arb.py`](./integrated_stat_arb.py), [`pair_hjb.py`](./pair_hjb.py), and [`pair_pinn.py`](./pair_pinn.py). The reproducible synthetic run is [`run_integrated_stat_arb.py`](./run_integrated_stat_arb.py); integration tests are in [`test_integrated_stat_arb.py`](./test_integrated_stat_arb.py) and [`test_pair_hjb.py`](./test_pair_hjb.py).
+Implemented across [`integrated_stat_arb.py`](./integrated_stat_arb.py), [`pair_hjb.py`](./pair_hjb.py), [`pair_pinn.py`](./pair_pinn.py), and [`combined_execution.py`](./combined_execution.py). The reproducible synthetic run and matched baseline are in [`run_integrated_stat_arb.py`](./run_integrated_stat_arb.py); integration tests are in [`test_integrated_stat_arb.py`](./test_integrated_stat_arb.py) and [`test_pair_hjb.py`](./test_pair_hjb.py).
 
 The pipeline causally filters observed log prices using the existing per-asset adaptive Kalman filters, then splits the filtered observations. Cointegration selection, spread calibration, and OU parameter estimation use only the training segment. The held-out filter estimates are generated in timestamp order; no later observation is used to revise an earlier estimate. The fitted pair identities and hedge ratios are kept fixed during the test segment.
 
@@ -363,20 +363,54 @@ u\,\partial_q V
 
 with terminal value \(V(T,z,q)=-\lambda q^2/2\). Here \(s\) is the training spread scale, \(\lambda\) the inventory-risk penalty, and \(c\) the quadratic trading-rate penalty. \(q\,s(-\kappa z)\) is the expected spread mark-to-market drift. The HJB is a reduced, risk-adjusted OU control model; it does not include jump risk, a full multi-asset covariance state, borrow availability, or detailed execution/market impact. Per-turnover transaction fees are charged by the backtest, but are not the quadratic execution penalty used in the HJB.
 
-The numerical HJB reference is solved on a finite \(z,q,t\) grid. Its value surface supplies a supervised data term to the PINN, alongside the HJB residual and terminal condition. Consequently, PINN-vs-reference errors measure approximation of this numerical surface, not an independent proof that either model matches the market. The PINN inventory gradient provides the trading rate. Each non-overlapping pair receives an equal gross-notional budget; normalized inventory and the portfolio leverage cap constrain exposure, and remaining holdings are liquidated at the end.
+The numerical HJB reference is solved on a finite \(z,q,t\) grid. Its value surface supplies a supervised data term to the PINN, alongside the HJB residual and terminal condition. Consequently, PINN-vs-reference errors measure approximation of this numerical surface, not an independent proof that either model matches the market. The PINN inventory gradient supplies a desired pair-inventory adjustment. Actual positions are integer execution lots; pair legs may fill asynchronously.
 
-`python3 run_integrated_stat_arb.py` selects one intended pair from a synthetic 750-observation training segment and trades 500 held-out intervals from initial capital \(100{,}000\). The observed run reported:
+The AS execution layer centers quotes at filtered mid-prices and skews them according to the difference between actual and HJB-target asset inventory. If actual inventory exceeds the target, bids are made less competitive and asks more competitive, and vice versa. A Poisson fill model with exponential distance sensitivity simulates passive fills; per-fill transaction costs, cash checks, inventory-slot bounds, and per-pair gross-notional caps are applied. AKF process-variance estimates are compared with training-period baselines. When the ratio crosses a configured volatility threshold, the desired pair inventory is reduced and the AS risk skew is widened, up to a configured cap. This is a volatility-regime response, not bull/bear classification, and it does not retrain the PINN. AS is therefore used as the pair strategy's simulated execution layer here, not as a separate profit-making market-making signal.
+
+`python3 run_integrated_stat_arb.py` selects one intended pair from a synthetic 750-observation training segment and trades 500 held-out intervals from initial capital \(100{,}000\), with a held-out volatility increase. It also runs a threshold-pair controller through the same AKF estimates and AS execution simulator, so the policy comparison holds the execution model and random fill stream fixed. The observed one-seed run reported:
 
 | Metric | Result |
 |---|---:|
-| Net held-out P&L | 4,924.42 |
-| Maximum drawdown | 1,357.93 |
-| Maximum drawdown / initial capital | 1.3570% |
-| Turnover | 1,096,119.34 |
-| Transaction costs | 109.61 |
-| Maximum gross exposure | 60,020.99 |
+| HJB-PINN + AKF + AS net held-out P&L | 9,945.24 |
+| Matched threshold + AKF + AS net held-out P&L | 9,945.75 |
+| HJB minus threshold P&L | -0.50 |
+| Maximum drawdown | 11,563.43 |
+| Maximum drawdown / initial capital | 10.9244% |
+| Turnover | 1,873,717.54 |
+| Transaction costs | 187.34 |
+| Maximum gross exposure | 59,428.25 |
+| AS spread capture after fees | 18,358.14 |
+| Quote-side opportunities / fills | 1,931 / 606 |
+| Held-out asset-time fraction flagged high-volatility | 63.87% |
 | PINN value RMSE vs. numerical HJB grid | 0.015448 |
 | PINN maximum value error | 0.060283 |
 | PINN mean absolute PDE residual | 0.006265 |
 
-These are a one-seed synthetic sanity run, not a measured improvement over Step 6 or evidence of expected market returns. The new strategy has not yet been ablated against raw prices, the threshold-based pair strategy, or a numerical-HJB policy; its risk and trading penalties have not been calibrated on real data. The AKF filters each asset independently and does not explicitly estimate a market regime. A next research phase should validate parameter selection with nested walk-forward tests, realistic borrow/impact/fill models, more seeds and stress cases, and a PINN-to-reference accuracy threshold before interpreting financial results.
+This one-seed synthetic run shows no improvement over the matched threshold policy (the P&L difference is negligible) and has a substantial 10.9% drawdown despite the synthetic generator's favorable mean-reverting pair. AS fill arrivals are independent of future price changes, with no queue position, adverse selection, partial fills, or market impact; thus spread capture and P&L are not realistic performance estimates. AS quote-opportunity counts are not exchange order-to-trade ratios. The AKF is a set of independent per-asset filters, not a multivariate regime model; the implemented risk response is volatility-based only, not bull/bear classification. The pair HJBs are solved separately, then combined with non-overlapping pairs and gross-exposure limits, not as a fully coupled multi-pair HJB. Short borrow, financing, and borrow fees are omitted. Risk/trading penalties and AS execution parameters remain illustrative, not calibrated.
+
+The current evidence therefore finalizes a runnable **research prototype** connecting the proposed components, but does not validate an investment strategy. Before any performance claim, run multi-seed matched comparisons and AKF-on/off ablations, use nested walk-forward validation on historical data, add realistic market/borrow/impact and adverse-selection models, test jump and directional-regime scenarios, and set a PINN-to-reference acceptance threshold before evaluation.
+
+## Step 9 — 1,000-simulation paired Monte Carlo comparison
+
+Implemented by [`run_monte_carlo.py`](./run_monte_carlo.py); the final 1,000 per-simulation results, including denoising diagnostics, are saved in [`monte_carlo_results_as_units.csv`](./monte_carlo_results_as_units.csv). Reproduce with:
+
+```bash
+python3 run_monte_carlo.py --simulations 1000 --first-seed 40000 --output monte_carlo_results_as_units.csv
+```
+
+The cointegration calibration and pair HJB-PINN are fit once on the same 750-observation synthetic training sample and then held fixed. This Monte Carlo configuration evaluates one selected cointegrated pair among three synthetic assets, not a simultaneous multi-pair portfolio. Each simulation generates a new 500-step noisy test continuation, with a volatility-regime change sampled between test steps 150 and 350. Both controllers receive the same filtered prices and process-variance history, the same AS execution assumptions, and the same random seed for matched fill draws. The comparator is the fixed \(z=2.0\) entry/\(z=0.5\) exit controller. This estimates variability conditional on one fitted synthetic model; it is **not** 1,000 independent training samples, parameter selections, or market histories.
+
+The original Monte Carlo report used an inconsistent AS scaling: risk aversion and distance sensitivity were divided by mid-price even though the quote calculation uses dollar-price volatility and inventory is measured in lots/shares. This suppressed inventory skew and made the strategies' execution too similar. The AS scaling was corrected to use share-equivalent inventory error and unscaled parameters in the quote calculation. The results below supersede the earlier run; the correction fixes units, not performance by parameter tuning.
+
+| Metric across 1,000 scenarios | HJB-PINN + AKF + AS | Threshold + AKF + AS |
+|---|---:|---:|
+| Mean net P&L | \$15,108.36 | \$19,289.46 |
+| 95% confidence interval for mean P&L | [\$14,956.10, \$15,260.63] | [\$19,145.96, \$19,432.97] |
+| P&L standard deviation | \$2,453.72 | \$2,312.58 |
+| Mean maximum drawdown fraction | 1.10% | 0.70% |
+
+The paired HJB-minus-threshold P&L difference was **-\$4,181.10 per \$100,000 initial capital**, with a paired \(t\)-interval of **[-\$4,319.00, -\$4,043.21]** and paired-bootstrap 95% interval **[-\$4,320.97, -\$4,047.42]**. HJB-PINN had higher P&L in 2.1% of runs (two-sided sign-test \(p=3.022\times10^{-258}\)); its mean drawdown was also higher. Target and executed-position paths differed in all 1,000 scenarios, and fill paths differed in all 1,000, so the corrected execution scale makes the controller comparison behaviorally distinct. In this chosen benchmark, however, the HJB-PINN controller underperformed the threshold policy.
+
+As a separate component diagnostic, held-out log-price RMSE was measured against the synthetic generator's latent prices. Raw-observation RMSE was **0.002996** (95% CI **[0.002993, 0.003000]**); AKF-filtered RMSE was **0.002921** (95% CI **[0.002917, 0.002924]**), a **2.52%** mean reduction. The paired absolute RMSE improvement was **0.0000754** (95% CI **[0.0000741, 0.0000767]**), with AKF reducing RMSE in 99.90% of runs. This supports a modest denoising result only for this known synthetic noise process. It is not evidence of improved trading returns, and it does not establish that the AKF handles real market regimes or heavy tails.
+
+**Conclusion:** This run finds no trading-performance improvement from the HJB-PINN over the matched threshold policy; the HJB-PINN has materially lower mean P&L and higher mean drawdown in the specified synthetic experiment. The AKF shows a modest synthetic denoising improvement, which must be reported separately from strategy performance. These results are conditional on one synthetic training fit, a deliberately mean-reverting pair generator, sampled volatility changes, and simplified Poisson fills that omit queueing, adverse selection, partial fills, market impact, borrow availability, and financing. They are neither evidence of live profitability nor proof the model cannot improve. Further work should focus on diagnosing/tuning the controller using training-only or nested walk-forward procedures, then evaluate once on fresh held-out histories with realistic execution and explicit stress tests; do not tune on these 1,000 evaluation paths.

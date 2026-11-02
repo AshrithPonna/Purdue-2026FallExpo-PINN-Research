@@ -18,7 +18,11 @@ def make_observed_pair_market(seed: int, observations: int = 800) -> MarketData:
     common = np.cumsum(rng.normal(0.0, 0.01, observations))
     spread = np.zeros(observations)
     for index in range(1, observations):
-        spread[index] = 0.8 * spread[index - 1] + rng.normal(0.0, 0.01)
+        innovation_scale = 0.01 if index < 600 else 0.03
+        spread[index] = (
+            0.8 * spread[index - 1]
+            + rng.normal(0.0, innovation_scale)
+        )
     unrelated = np.cumsum(rng.normal(0.0, 0.01, observations))
     log_prices = np.column_stack(
         (0.7 * common + spread, common, unrelated)
@@ -77,6 +81,19 @@ class IntegratedStatArbTests(unittest.TestCase):
         self.assertLessEqual(np.max(result.gross_exposure), 100_000.0 + 1e-7)
         self.assertGreater(result.turnover.sum(), 0.0)
         self.assertGreater(result.transaction_costs.sum(), 0.0)
+        self.assertGreater(run.execution.order_count, 0)
+        self.assertGreater(run.execution.fill_count, 0)
+        self.assertGreater(run.execution.spread_capture_after_fees, 0.0)
+        self.assertTrue(np.all(run.execution.target_inventory <= 10.0))
+        self.assertTrue(np.all(run.execution.target_inventory >= -10.0))
+        quoted = np.isfinite(run.execution.bid_quotes) & np.isfinite(
+            run.execution.ask_quotes
+        )
+        self.assertTrue(np.all(
+            run.execution.ask_quotes[quoted] >= run.execution.bid_quotes[quoted]
+        ))
+        self.assertTrue(np.all(run.execution.regime_multiplier >= 1.0))
+        self.assertTrue(np.any(run.execution.regime_multiplier >= 1.5))
         self.assertTrue(
             np.isfinite(statistical_arbitrage_metrics(result).maximum_drawdown)
         )
