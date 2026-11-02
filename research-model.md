@@ -255,8 +255,17 @@ The solver integrates the transformed inventory ODE backward from the terminal c
 
 The residual is a finite-difference diagnostic of this numerical reference, not a trading-performance metric and not a PINN result. On the tested synthetic configuration (11 inventory states, 201 time nodes), the maximum absolute residual at interior times is below \(10^{-6}\). This verifies the implementation on that configuration, not the empirical validity of its assumptions.
 
+## Step 5 — PINN approximation of the reduced HJB
+
+**Implemented in** [`pinn.py`](./pinn.py), tested in [`test_pinn.py`](./test_pinn.py).
+
+The PINN approximates the positive transformed factor \(v(t,q)\) from Step 4, not the full multi-asset value function. Its inputs are normalized time and discrete inventory; a softplus output enforces \(v>0\). Training minimizes the reduced HJB residual at randomly sampled times and all inventory states, plus a weighted terminal-condition loss \(v(T,q)=1\). Quote offsets inside the residual use the same clipped analytical optimizer and inventory-edge fill exclusions as the reference solver.
+
+`train_inventory_pinn` accepts an explicit training configuration and seed. `InventoryPINN.compare` reports value-factor RMSE/max error against the numerical reference, PINN residual summaries, and terminal-condition RMSE. In the seeded smoke-test configuration (500 iterations, 32 collocation times, width 32, two hidden layers, five inventory states, 51 reference time nodes), measured factor RMSE was \(0.0199\), maximum factor error \(0.0459\), mean absolute PINN residual \(0.0114\), and terminal RMSE \(0.00109\). This is a working approximation, not a high-accuracy solve; more training/tuning may be needed. The numerical reference is not used as a training target; it is used only for evaluation. This is a physics-only PINN with a soft terminal boundary penalty, not a financial-performance test or proof of generalization.
+
+PyTorch is now declared alongside NumPy and SciPy in [`requirements.txt`](./requirements.txt). The current implementation is intentionally limited to the reduced one-asset diffusion model; it does not add jumps, multi-asset state, regimes, AKF integration, or a portfolio policy.
+
 ## Later steps (not implemented)
 
-5. Train a PINN to approximate the value function and compare it with the numerical reference.
 6. Evaluate both policies out of sample in ordinary, heavy-tail, and regime-change scenarios.
 7. Report net P&L, maximum drawdown and duration, inventory variance, spread capture, fill rate, order-to-trade ratio, and HJB approximation errors. Keep numerical residuals separate from financial performance.
