@@ -67,6 +67,7 @@ class EvaluationRun:
     policy: PolicyName
     terminal_pnl: float
     fills: int
+    mid_prices: FloatArray
     backtest: BacktestResult
 
 
@@ -178,6 +179,7 @@ def evaluate_scenarios(
                         policy=policy_name,
                         terminal_pnl=float(backtest.equity[-1] - initial_cash),
                         fills=int(backtest.bid_fills.sum() + backtest.ask_fills.sum()),
+                        mid_prices=market.mid_prices,
                         backtest=backtest,
                     )
                 )

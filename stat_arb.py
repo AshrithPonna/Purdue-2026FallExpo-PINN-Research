@@ -81,6 +81,7 @@ class StatArbResult:
     equity: FloatArray
     cash: FloatArray
     holdings: FloatArray
+    gross_exposure: FloatArray
     zscores: FloatArray
     pair_positions: FloatArray
     turnover: FloatArray
@@ -212,6 +213,7 @@ def backtest_stat_arb(
     equity = np.empty(time_count, dtype=np.float64)
     cash_history = np.empty(time_count, dtype=np.float64)
     holdings_history = np.zeros((time_count, asset_count), dtype=np.float64)
+    gross_exposure = np.zeros(time_count, dtype=np.float64)
     zscores = np.empty((time_count, pair_count), dtype=np.float64)
     pair_positions = np.zeros((time_count, pair_count), dtype=np.float64)
     turnover = np.zeros(time_count, dtype=np.float64)
@@ -272,6 +274,7 @@ def backtest_stat_arb(
         cash -= float(trade_delta @ prices) + step_cost
         holdings = target_holdings
         equity[time_index] = cash + float(holdings @ prices)
+        gross_exposure[time_index] = float(np.sum(np.abs(holdings * prices)))
         cash_history[time_index] = cash
         holdings_history[time_index] = holdings
         turnover[time_index] = step_turnover
@@ -286,11 +289,12 @@ def backtest_stat_arb(
         equity[-1] = cash
         cash_history[-1] = cash
         holdings_history[-1] = holdings
+        gross_exposure[-1] = 0.0
         turnover[-1] += final_turnover
         transaction_costs[-1] += final_cost
 
     for array in (
-        equity, cash_history, holdings_history, zscores,
+        equity, cash_history, holdings_history, gross_exposure, zscores,
         pair_positions, turnover, transaction_costs,
     ):
         array.setflags(write=False)
@@ -302,6 +306,7 @@ def backtest_stat_arb(
         equity=equity,
         cash=cash_history,
         holdings=holdings_history,
+        gross_exposure=gross_exposure,
         zscores=zscores,
         pair_positions=pair_positions,
         turnover=turnover,

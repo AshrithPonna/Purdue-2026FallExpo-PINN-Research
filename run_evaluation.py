@@ -7,6 +7,7 @@ import numpy as np
 from baselines import ASParameters
 from evaluation import ScenarioConfig, evaluate_scenarios, paired_terminal_pnl_differences
 from hjb import InventoryHJBParameters, solve_inventory_hjb
+from metrics import market_making_metrics
 from pinn import PINNTrainingConfig, train_inventory_pinn
 
 
@@ -80,12 +81,23 @@ def main() -> None:
             if run.scenario == scenario and run.policy == policy
         ]
         pnl = np.array([run.terminal_pnl for run in selected], dtype=np.float64)
-        fills = np.array([run.fills for run in selected], dtype=np.float64)
+        metrics = [
+            market_making_metrics(
+                run.backtest,
+                run.mid_prices,
+                as_parameters.fee_per_unit,
+            )
+            for run in selected
+        ]
         print(
             f"{scenario:13s} {policy:8s} "
             f"mean_pnl={pnl.mean(): .6f} "
             f"std_pnl={pnl.std(ddof=1): .6f} "
-            f"mean_fills={fills.mean(): .2f}"
+            f"mean_max_drawdown={np.mean([m.maximum_drawdown for m in metrics]): .6f} "
+            f"mean_drawdown_fraction={np.mean([m.maximum_drawdown_fraction for m in metrics]): .6f} "
+            f"mean_inventory_variance={np.mean([np.mean(m.inventory_variance_by_asset) for m in metrics]): .6f} "
+            f"mean_spread_capture={np.mean([m.spread_capture_after_fees for m in metrics]): .6f} "
+            f"mean_quote_opportunities_per_trade={np.mean([m.quote_opportunity_to_trade_ratio for m in metrics if m.quote_opportunity_to_trade_ratio is not None]) if any(m.quote_opportunity_to_trade_ratio is not None for m in metrics) else float('nan'): .2f}"
         )
     for scenario, paired in differences.items():
         print(

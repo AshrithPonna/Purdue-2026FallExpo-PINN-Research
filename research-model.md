@@ -305,6 +305,38 @@ This is a simple pairs-trading baseline, not the requested final HJB-embedded mu
 
 `python3 run_stat_arb.py` generates two synthetic cointegrated pairs and one unrelated asset, fits on the first 750 observations, and evaluates on the next 500 observations for five seeds. It selected both intended pairs in each run. Capital-relative test P&L averaged \(20{,}358.75\) with sample standard deviation \(5{,}517.94\) from initial capital \(100{,}000\), after average transaction costs of about \(203.56\). Because the synthetic generator explicitly creates mean-reverting pairs, this verifies the pipeline against known structure only; it is not evidence of real-market profitability. It also lacks a realistic borrow/short-sale model and a full set of benchmark strategies.
 
-## Step 7 — Performance and risk report (not yet implemented)
+## Step 7 — Performance and risk report
 
-Report held-out net P&L, maximum drawdown and duration, exposure/inventory variability, turnover and transaction costs, pair selection stability, and HJB approximation errors. Separate market-making metrics (such as spread capture and order-to-trade ratio) from statistical-arbitrage metrics. Keep numerical residuals separate from financial performance.
+Implemented in [`metrics.py`](./metrics.py), with reproducible reports from [`run_stat_arb.py`](./run_stat_arb.py) and [`run_evaluation.py`](./run_evaluation.py), and metric checks in [`test_metrics.py`](./test_metrics.py). Drawdown depth and duration are computed from the running equity peak; statistical-arbitrage drawdown includes initial capital as the starting equity observation. Inventory variance is in squared asset units, while gross exposure, P&L, turnover, and fees are in the simulation's currency units.
+
+### Statistical arbitrage: held-out synthetic runs
+
+The five-seed pair experiment described in Step 6 reports:
+
+| Metric | Mean | Sample standard deviation |
+|---|---:|---:|
+| Net test P&L | 20,358.75 | 5,517.94 |
+| Maximum drawdown | 809.50 | 266.02 |
+| Maximum drawdown / initial capital | 0.72% | 0.18% |
+| Maximum drawdown duration | 13.60 steps | 10.06 steps |
+| Mean gross exposure | 12,850.40 | 5,948.23 |
+| Maximum gross exposure | 90,000.00 | 22,360.68 |
+| Turnover | 2,035,567.66 | 633,331.80 |
+| Transaction costs | 203.56 | 63.33 |
+| Transaction costs / turnover | 0.01% | approximately 0.00%* |
+| Mean absolute spread z-score | 0.8236 | 0.0650 |
+| Active pair-time fraction | 12.98% | 6.06% |
+
+*The cost fraction is 1 basis point by construction; rounding to two decimal places in percent obscures it. Both intended synthetic pairs were selected in all five runs. This selection stability is expected because the data generator deliberately creates those cointegrated pairs; it does not establish stability on real or unseen market regimes. All financial results above remain synthetic pipeline checks, not evidence of expected live returns.
+
+### Separate single-asset market-making experiment
+
+These are not statistical-arbitrage results. Across five seeds in the ordinary scenario, AS had mean net P&L \(2.0184\), mean maximum drawdown \(0.2821\) (0.0028% of initial cash), mean inventory variance \(0.6772\), and mean spread capture after fees \(1.9366\). HJB-PINN had \(1.9705\) mean net P&L, \(0.2821\) mean maximum drawdown (0.0028%), \(0.6147\) inventory variance, and \(1.8561\) spread capture after fees. Heavy-tail and regime-change comparisons remain exploratory and are reported by the evaluation runner; the diffusion-only HJB does not explicitly model heavy-tail jumps.
+
+The runner also reports about 249.6 quote-side opportunities per fill in the ordinary AS runs (252.0 for HJB-PINN). This is only a simulation-specific proxy: quotes are evaluated each step, and the backtest does not model exchange-level order submissions, cancellations, queue position, or partial fills. It must not be interpreted as a real venue order-to-trade ratio.
+
+### HJB-PINN numerical comparison
+
+For the configuration used by the market-making runner, the trained PINN's reference comparison reported value-factor RMSE \(0.10653\), maximum value-factor error \(0.21405\), mean absolute HJB residual \(0.04480\), maximum absolute HJB residual \(0.12505\), and terminal-condition RMSE \(0.00554\). These are numerical approximation diagnostics, not portfolio performance metrics. They indicate that PINN accuracy still needs improvement before using it to support strong policy-performance claims.
+
+To reproduce and test the reports, run `python3 run_stat_arb.py`, `python3 run_evaluation.py`, and `python3 -m unittest -v`. This step closes the current prototype reporting phase only; it does not integrate the single-asset PINN/AS policy into the multi-asset statistical-arbitrage strategy or validate it on historical/out-of-sample market data.
