@@ -211,9 +211,52 @@ where \(e_k\) is the one-step innovation, \(K_k\) the Kalman gain, \(P\) the sta
 
 This is a simple adaptive random-walk filter, not an EKF/SKF comparison, a heavy-tail-robust filter, or a bull/bear regime detector. The measurement variance is fixed, assets are filtered independently, and adaptation parameters need calibration. The filter has not yet been wired into the AS backtest as a separately isolated policy input; doing so requires keeping observed execution prices distinct from estimated prices used for quotes.
 
+## Step 4 — Reduced HJB reference solution
+
+**Implemented in** [`hjb.py`](./hjb.py), with numerical checks in [`test_hjb.py`](./test_hjb.py).
+
+Before attempting the full multi-asset PINN, this step solves a deliberately reduced one-asset problem. Assume an arithmetic Brownian mid-price \(dS_t=\sigma\,dW_t\), finite inventory \(q\in\{q_{\min},\ldots,q_{\max}\}\), unit fills, exponential arrival intensity \(\lambda(\delta)=A e^{-k\delta}\), per-unit fee \(f\), and exponential utility \(U(w)=-e^{-\eta w}\). Quote offsets are constrained to \([0,\delta_{\max}]\). There are no price jumps, drift, log-price dynamics, or cross-asset effects in this reference problem.
+
+With wealth \(w=c+qS\), write
+
+\[
+V(t,c,q,S)=-e^{-\eta(c+qS)}v_q(t).
+\]
+
+A fill at either quote changes marked wealth by \(\delta-f\). The diffusion generator contributes \(\frac12\eta^2\sigma^2q^2v_q\). Define the transformed fill operator
+
+\[
+\mathcal F_q(v)=
+\inf_{\delta^b,\delta^a\in[0,\delta_{\max}]}
+\left[
+\lambda(\delta^b)\left(e^{-\eta(\delta^b-f)}v_{q-1}-v_q\right)
++\lambda(\delta^a)\left(e^{-\eta(\delta^a-f)}v_{q+1}-v_q\right)
+\right],
+\]
+
+omitting the bid term at \(q_{\min}\) and the ask term at \(q_{\max}\), so fills cannot leave the finite inventory state space. The reduced backward HJB is
+
+\[
+\partial_t v_q+\frac12\eta^2\sigma^2q^2v_q+\mathcal F_q(v)=0,
+\qquad v_q(T)=1.
+\]
+
+The optimal offset for either available side, with its adjacent inventory value \(v_{\mathrm{next}}\), is the clipped analytical minimizer
+
+\[
+\delta^*=
+\operatorname{clip}_{[0,\delta_{\max}]}
+\left[
+f+\frac{1}{\eta}\log\!\left(\frac{(k+\eta)v_{\mathrm{next}}}{k v_q}\right)
+\right].
+\]
+
+The solver integrates the transformed inventory ODE backward from the terminal condition using SciPy's DOP853 integrator, then evaluates the HJB residual on the returned time/inventory grid. It reconstructs the original value function through `InventoryHJBResult.value(cash, mid_price)`. Inventory edges use a no-outward-fill truncation, not a reflecting or extrapolated value boundary.
+
+The residual is a finite-difference diagnostic of this numerical reference, not a trading-performance metric and not a PINN result. On the tested synthetic configuration (11 inventory states, 201 time nodes), the maximum absolute residual at interior times is below \(10^{-6}\). This verifies the implementation on that configuration, not the empirical validity of its assumptions.
+
 ## Later steps (not implemented)
 
-4. Numerically solve a low-dimensional HJB reference problem and derive the HJB residual and boundary conditions.
 5. Train a PINN to approximate the value function and compare it with the numerical reference.
 6. Evaluate both policies out of sample in ordinary, heavy-tail, and regime-change scenarios.
 7. Report net P&L, maximum drawdown and duration, inventory variance, spread capture, fill rate, order-to-trade ratio, and HJB approximation errors. Keep numerical residuals separate from financial performance.
