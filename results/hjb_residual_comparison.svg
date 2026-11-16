@@ -1,38 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="390" viewBox="0 0 900 390" role="img" aria-labelledby="title description">
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" viewBox="0 0 720 360" role="img" aria-labelledby="title description">
   <title id="title">HJB-PINN PDE Residual</title>
-  <desc id="description">Mean absolute PDE residual from one synthetic training fit for the no-fee and fee-aware variants.</desc>
+  <desc id="description">Mean absolute PDE residual for the no-fee and fee-aware HJB-PINN variants from one synthetic training fit.</desc>
   <style>
-    text { font-family: "Times New Roman", Georgia, serif; fill: #241f19; }
-    .axis { stroke: #51493e; stroke-width: 1.2; }
-    .tick { stroke: #51493e; stroke-width: 1; }
-    .guide { stroke: #ddd6c9; stroke-width: 1; }
+    text { font-family: "Times New Roman", Georgia, serif; fill: #202020; }
+    .axis { stroke: #303030; stroke-width: 1; }
+    .guide { stroke: #dedede; stroke-width: 1; }
   </style>
-  <rect width="900" height="390" fill="#fbf8f1"/>
+  <rect width="720" height="360" fill="#ffffff"/>
 
-  <text x="70" y="31" font-size="13" font-weight="700">Graph 1</text>
-  <text x="70" y="62" font-size="25" font-weight="700">HJB-PINN PDE Residual</text>
+  <text x="360" y="50" text-anchor="middle" font-size="22" font-weight="700">HJB-PINN PDE Residual</text>
+  <text x="360" y="73" text-anchor="middle" font-size="12">Graph 1</text>
 
-  <text x="70" y="157" font-size="17">No fee term + AKF</text>
-  <text x="70" y="237" font-size="17">Fee-aware + AKF</text>
+  <line x1="100" y1="110" x2="100" y2="260" class="guide"/>
+  <line x1="290" y1="110" x2="290" y2="260" class="guide"/>
+  <line x1="480" y1="110" x2="480" y2="260" class="guide"/>
+  <line x1="670" y1="110" x2="670" y2="260" class="guide"/>
 
-  <line x1="350" y1="111" x2="350" y2="270" class="guide"/>
-  <line x1="516.7" y1="111" x2="516.7" y2="270" class="guide"/>
-  <line x1="683.3" y1="111" x2="683.3" y2="270" class="guide"/>
-  <line x1="850" y1="111" x2="850" y2="270" class="guide"/>
+  <circle cx="289.8" cy="155" r="6" fill="#1f4e79"/>
+  <text x="289.8" y="137" text-anchor="middle" font-size="13">0.006264995</text>
+  <circle cx="444.9" cy="218" r="6" fill="#8b3a3a"/>
+  <text x="444.9" y="200" text-anchor="middle" font-size="13">0.006269078</text>
 
-  <circle cx="516.5" cy="151" r="6" fill="#241f19"/>
-  <text x="516.5" y="132" text-anchor="middle" font-size="15">0.006264995</text>
-  <circle cx="653" cy="231" r="6" fill="#241f19"/>
-  <text x="653" y="206" text-anchor="middle" font-size="15">0.006269078</text>
+  <line x1="100" y1="260" x2="670" y2="260" class="axis"/>
+  <line x1="100" y1="260" x2="100" y2="266" class="axis"/>
+  <line x1="290" y1="260" x2="290" y2="266" class="axis"/>
+  <line x1="480" y1="260" x2="480" y2="266" class="axis"/>
+  <line x1="670" y1="260" x2="670" y2="266" class="axis"/>
+  <text x="100" y="285" text-anchor="middle" font-size="12">0.006260</text>
+  <text x="290" y="285" text-anchor="middle" font-size="12">0.006265</text>
+  <text x="480" y="285" text-anchor="middle" font-size="12">0.006270</text>
+  <text x="670" y="285" text-anchor="middle" font-size="12">0.006275</text>
+  <text x="385" y="315" text-anchor="middle" font-size="14">Mean absolute PDE residual</text>
 
-  <line x1="350" y1="270" x2="850" y2="270" class="axis"/>
-  <line x1="350" y1="270" x2="350" y2="277" class="tick"/>
-  <line x1="516.7" y1="270" x2="516.7" y2="277" class="tick"/>
-  <line x1="683.3" y1="270" x2="683.3" y2="277" class="tick"/>
-  <line x1="850" y1="270" x2="850" y2="277" class="tick"/>
-  <text x="350" y="300" text-anchor="middle" font-size="14">0.006260</text>
-  <text x="516.7" y="300" text-anchor="middle" font-size="14">0.006265</text>
-  <text x="683.3" y="300" text-anchor="middle" font-size="14">0.006270</text>
-  <text x="850" y="300" text-anchor="middle" font-size="14">0.006275</text>
-  <text x="600" y="338" text-anchor="middle" font-size="16">Mean absolute PDE residual</text>
+  <rect x="475" y="85" width="185" height="58" fill="#ffffff" stroke="#404040" stroke-width="1"/>
+  <circle cx="490" cy="104" r="5" fill="#1f4e79"/>
+  <text x="502" y="108" font-size="11.5">No fee term + AKF</text>
+  <circle cx="490" cy="125" r="5" fill="#8b3a3a"/>
+  <text x="502" y="129" font-size="11.5">Fee-aware + AKF</text>
 </svg>
