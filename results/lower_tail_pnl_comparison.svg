@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="550" viewBox="0 0 880 550" role="img" aria-labelledby="title description">
+  <title id="title">Lower-tail 5% P&amp;L</title>
+  <desc id="description">Mean P&amp;L in the lowest five percent of outcomes by controller across three synthetic stress scenarios. Values are dollars.</desc>
+  <style>
+    text { font-family: "Times New Roman", Georgia, serif; fill: #202020; }
+    .axis { stroke: #303030; stroke-width: 1; }
+    .guide { stroke: #dedede; stroke-width: 1; }
+    .zero { stroke: #777777; stroke-width: 1.4; stroke-dasharray: 4 4; }
+  </style>
+  <rect width="880" height="550" fill="#ffffff"/>
+
+  <text x="440" y="50" text-anchor="middle" font-size="22" font-weight="700">Lower-tail 5% P&amp;L</text>
+  <text x="440" y="73" text-anchor="middle" font-size="12">Graph 6</text>
+
+  <line x1="115" y1="105" x2="835" y2="105" class="guide"/>
+  <line x1="115" y1="146.4" x2="835" y2="146.4" class="guide"/>
+  <line x1="115" y1="229.3" x2="835" y2="229.3" class="guide"/>
+  <line x1="115" y1="312.1" x2="835" y2="312.1" class="zero"/>
+  <line x1="115" y1="395" x2="835" y2="395" class="axis"/>
+  <line x1="115" y1="105" x2="115" y2="395" class="axis"/>
+
+  <text x="102" y="399" text-anchor="end" font-size="12">-$10k</text>
+  <text x="102" y="316" text-anchor="end" font-size="12">$0</text>
+  <text x="102" y="233" text-anchor="end" font-size="12">$10k</text>
+  <text x="102" y="150" text-anchor="end" font-size="12">$20k</text>
+  <text x="102" y="109" text-anchor="end" font-size="12">$25k</text>
+  <text x="42" y="250" text-anchor="middle" font-size="14" transform="rotate(-90 42 250)">Lower-tail 5% mean P&amp;L ($)</text>
+
+  <circle cx="190" cy="134.7" r="5.5" fill="#1f4e79"/>
+  <text x="190" y="121" text-anchor="middle" font-size="11.5">$21.4k</text>
+  <circle cx="230" cy="195.2" r="5.5" fill="#a14c35"/>
+  <text x="230" y="213" text-anchor="middle" font-size="11.5">$14.1k</text>
+  <circle cx="270" cy="230.1" r="5.5" fill="#536b3b"/>
+  <text x="270" y="217" text-anchor="middle" font-size="11.5">$9.9k</text>
+  <circle cx="310" cy="227.6" r="5.5" fill="#75567a"/>
+  <text x="310" y="245" text-anchor="middle" font-size="11.5">$10.2k</text>
+
+  <circle cx="415" cy="126.4" r="5.5" fill="#1f4e79"/>
+  <text x="415" y="113" text-anchor="middle" font-size="11.5">$22.3k</text>
+  <circle cx="455" cy="188.6" r="5.5" fill="#a14c35"/>
+  <text x="455" y="206" text-anchor="middle" font-size="11.5">$14.9k</text>
+  <circle cx="495" cy="231.3" r="5.5" fill="#536b3b"/>
+  <text x="495" y="218" text-anchor="middle" font-size="11.5">$9.7k</text>
+  <circle cx="535" cy="229.1" r="5.5" fill="#75567a"/>
+  <text x="535" y="247" text-anchor="middle" font-size="11.5">$10.0k</text>
+
+  <circle cx="640" cy="388.1" r="5.5" fill="#1f4e79"/>
+  <text x="640" y="375" text-anchor="middle" font-size="11.5">-$9.2k</text>
+  <circle cx="680" cy="267.7" r="5.5" fill="#a14c35"/>
+  <text x="680" y="254" text-anchor="middle" font-size="11.5">$5.4k</text>
+  <circle cx="720" cy="344.3" r="5.5" fill="#536b3b"/>
+  <text x="720" y="331" text-anchor="middle" font-size="11.5">-$3.9k</text>
+  <circle cx="760" cy="342.4" r="5.5" fill="#75567a"/>
+  <text x="760" y="360" text-anchor="middle" font-size="11.5">-$3.6k</text>
+
+  <text x="250" y="430" text-anchor="middle" font-size="13">Volatility shift</text>
+  <text x="475" y="430" text-anchor="middle" font-size="13">Heavy-tail</text>
+  <text x="700" y="430" text-anchor="middle" font-size="13">Cointegration break</text>
+  <text x="475" y="466" text-anchor="middle" font-size="14">Stress scenario</text>
+
+  <rect x="588" y="114" width="242" height="104" fill="#ffffff" stroke="#404040" stroke-width="1"/>
+  <circle cx="602" cy="133" r="5" fill="#1f4e79"/>
+  <text x="614" y="137" font-size="11.5">Threshold, no AKF de-risking</text>
+  <circle cx="602" cy="156" r="5" fill="#a14c35"/>
+  <text x="614" y="160" font-size="11.5">Threshold + AKF de-risking</text>
+  <circle cx="602" cy="179" r="5" fill="#536b3b"/>
+  <text x="614" y="183" font-size="11.5">HJB-PINN, no fee term + AKF</text>
+  <circle cx="602" cy="202" r="5" fill="#75567a"/>
+  <text x="614" y="206" font-size="11.5">HJB-PINN, fee-aware + AKF</text>
+</svg>
