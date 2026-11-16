@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="990" height="500" viewBox="0 0 990 500" role="img" aria-labelledby="title description">
+  <title id="title">Spread Capture</title>
+  <desc id="description">Mean spread capture efficiency by controller across three synthetic stress scenarios. Values are percentages.</desc>
+  <style>
+    text { font-family: "Times New Roman", Georgia, serif; fill: #202020; }
+    .axis { stroke: #303030; stroke-width: 1; }
+    .guide { stroke: #dedede; stroke-width: 1; }
+  </style>
+  <rect width="990" height="500" fill="#ffffff"/>
+
+  <text x="475" y="50" text-anchor="middle" font-size="22" font-weight="700">Spread Capture</text>
+  <text x="475" y="73" text-anchor="middle" font-size="12">Graph 8</text>
+
+  <rect x="145" y="105" width="210" height="290" fill="#f7f7f5"/>
+  <rect x="370" y="105" width="210" height="290" fill="#f7f7f5"/>
+  <rect x="595" y="105" width="210" height="290" fill="#f7f7f5"/>
+
+  <line x1="115" y1="105" x2="835" y2="105" class="guide"/>
+  <line x1="115" y1="177.5" x2="835" y2="177.5" class="guide"/>
+  <line x1="115" y1="250" x2="835" y2="250" class="guide"/>
+  <line x1="115" y1="322.5" x2="835" y2="322.5" class="guide"/>
+  <line x1="115" y1="395" x2="835" y2="395" class="axis"/>
+  <line x1="115" y1="105" x2="115" y2="395" class="axis"/>
+
+  <text x="102" y="399" text-anchor="end" font-size="12">0.0%</text>
+  <text x="102" y="327" text-anchor="end" font-size="12">0.2%</text>
+  <text x="102" y="254" text-anchor="end" font-size="12">0.4%</text>
+  <text x="102" y="181" text-anchor="end" font-size="12">0.6%</text>
+  <text x="102" y="109" text-anchor="end" font-size="12">0.8%</text>
+  <text x="42" y="250" text-anchor="middle" font-size="14" transform="rotate(-90 42 250)">Mean spread capture efficiency (%)</text>
+
+  <circle cx="190" cy="172.8" r="5.5" fill="#1f4e79"/>
+  <text x="190" y="159" text-anchor="middle" font-size="11.5">0.613%</text>
+  <circle cx="230" cy="221.6" r="5.5" fill="#a14c35"/>
+  <text x="230" y="239" text-anchor="middle" font-size="11.5">0.478%</text>
+  <circle cx="270" cy="289.7" r="5.5" fill="#536b3b"/>
+  <text x="270" y="277" text-anchor="middle" font-size="11.5">0.291%</text>
+  <circle cx="310" cy="286.1" r="5.5" fill="#75567a"/>
+  <text x="310" y="304" text-anchor="middle" font-size="11.5">0.300%</text>
+
+  <circle cx="415" cy="172.8" r="5.5" fill="#1f4e79"/>
+  <text x="415" y="159" text-anchor="middle" font-size="11.5">0.614%</text>
+  <circle cx="455" cy="215.6" r="5.5" fill="#a14c35"/>
+  <text x="455" y="233" text-anchor="middle" font-size="11.5">0.495%</text>
+  <circle cx="495" cy="284.6" r="5.5" fill="#536b3b"/>
+  <text x="495" y="272" text-anchor="middle" font-size="11.5">0.304%</text>
+  <circle cx="535" cy="281.2" r="5.5" fill="#75567a"/>
+  <text x="535" y="299" text-anchor="middle" font-size="11.5">0.314%</text>
+
+  <circle cx="640" cy="158.0" r="5.5" fill="#1f4e79"/>
+  <text x="640" y="145" text-anchor="middle" font-size="11.5">0.654%</text>
+  <circle cx="680" cy="259.4" r="5.5" fill="#a14c35"/>
+  <text x="680" y="246" text-anchor="middle" font-size="11.5">0.374%</text>
+  <circle cx="720" cy="295.6" r="5.5" fill="#536b3b"/>
+  <text x="720" y="283" text-anchor="middle" font-size="11.5">0.274%</text>
+  <circle cx="760" cy="293.1" r="5.5" fill="#75567a"/>
+  <text x="760" y="311" text-anchor="middle" font-size="11.5">0.281%</text>
+
+  <text x="250" y="430" text-anchor="middle" font-size="13">Volatility shift</text>
+  <text x="475" y="430" text-anchor="middle" font-size="13">Heavy-tail</text>
+  <text x="700" y="430" text-anchor="middle" font-size="13">Cointegration break</text>
+  <text x="475" y="466" text-anchor="middle" font-size="14">Stress scenario</text>
+
+  <rect x="775" y="114" width="210" height="104" fill="#ffffff" stroke="#404040" stroke-width="1"/>
+  <circle cx="789" cy="133" r="5" fill="#1f4e79"/>
+  <text x="801" y="137" font-size="11.5">Threshold, no AKF de-risking</text>
+  <circle cx="789" cy="156" r="5" fill="#a14c35"/>
+  <text x="801" y="160" font-size="11.5">Threshold + AKF de-risking</text>
+  <circle cx="789" cy="179" r="5" fill="#536b3b"/>
+  <text x="801" y="183" font-size="11.5">HJB-PINN, no fee term + AKF</text>
+  <circle cx="789" cy="202" r="5" fill="#75567a"/>
+  <text x="801" y="206" font-size="11.5">HJB-PINN, fee-aware + AKF</text>
+</svg>
