@@ -4,7 +4,7 @@ from pinn_research.run_stress_ablation import _latex_table
 
 
 class StressAblationLatexTests(unittest.TestCase):
-    def test_table_includes_abstract_metrics_and_method_caveats(self) -> None:
+    def test_table_includes_abstract_metrics_without_extra_notes(self) -> None:
         rows = [
             {
                 "scenario": "cointegration_break",
@@ -38,10 +38,12 @@ class StressAblationLatexTests(unittest.TestCase):
 
         self.assertIn(r"\begin{tabular}{llrrrrrrrrr}", table)
         self.assertIn(r"Mean P\&L", table)
+        self.assertIn(r"Bottom 5\% P\&L", table)
         self.assertIn("Cointegration break", table)
         self.assertIn("---", table)
         self.assertIn("0.00627", table)
-        self.assertIn("not an exchange order-to-trade ratio", table)
+        self.assertIn(r"\caption{Synthetic stress-test results.}", table)
+        self.assertNotIn(r"\footnotesize", table)
 
 
 if __name__ == "__main__":

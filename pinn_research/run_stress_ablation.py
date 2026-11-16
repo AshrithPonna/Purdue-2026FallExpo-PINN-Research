@@ -35,9 +35,9 @@ VARIANTS = (
     "hjb_fee_aware_akf_variance_derisk",
 )
 VARIANT_LABELS = {
-    "threshold_no_variance_derisk": "Threshold, no AKF de-risking",
-    "threshold_akf_variance_derisk": "Threshold + AKF de-risking",
-    "hjb_no_fee_akf_variance_derisk": "HJB-PINN, no fee term + AKF",
+    "threshold_no_variance_derisk": "Threshold, no AKF",
+    "threshold_akf_variance_derisk": "Threshold + AKF",
+    "hjb_no_fee_akf_variance_derisk": "HJB-PINN, no fee + AKF",
     "hjb_fee_aware_akf_variance_derisk": "HJB-PINN, fee-aware + AKF",
 }
 SCENARIO_LABELS = {
@@ -95,15 +95,15 @@ def _latex_table(rows: list[dict[str, float | int | str]]) -> str:
     lines = [
         r"\begin{table}[htbp]",
         r"\centering",
-        r"\caption{Synthetic stress-test metrics; these are not live-market estimates.}",
+        r"\caption{Synthetic stress-test results.}",
         r"\label{tab:synthetic-abstract-metrics}",
         r"\resizebox{\textwidth}{!}{%",
         r"\begin{tabular}{llrrrrrrrrr}",
         r"\hline",
         (
-            r"Scenario & Controller & Mean P\&L & Lower-tail 5\% P\&L & "
+            r"Scenario & Controller & Mean P\&L & Bottom 5\% P\&L & "
             r"Inventory variance & Spread capture & Quote/fill proxy & "
-            r"Mean drawdown & 95th-pctl drawdown & Drawdown duration & "
+            r"Mean drawdown & 95th percentile drawdown & Drawdown duration & "
             r"HJB residual \\"
         ),
         r"\hline",
@@ -150,15 +150,6 @@ def _latex_table(rows: list[dict[str, float | int | str]]) -> str:
             r"\hline",
             r"\end{tabular}%",
             r"}",
-            r"\par\smallskip",
-            (
-                r"\footnotesize Inventory variance is for normalized pair "
-                r"positions. Spread capture and quote/fill are simulator "
-                r"proxies; quote/fill is not an exchange order-to-trade ratio. "
-                r"HJB residual is a training-fit PDE diagnostic and is not "
-                r"applicable to threshold controllers. Results use one "
-                r"synthetic training fit."
-            ),
             r"\end{table}",
         )
     )

@@ -1,0 +1,347 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1050" viewBox="0 0 1500 1050" role="img" aria-labelledby="title description">
+<title id="title">Summary of Results</title>
+<desc id="description">Nine metric panels compare four controllers across three synthetic stress scenarios. Each metric has its own scale.</desc>
+<style>text{font-family:"Times New Roman",Georgia,serif;fill:#202020}.axis{stroke:#303030;stroke-width:1}.guide{stroke:#dedede;stroke-width:1}</style>
+<rect width="1500" height="1050" fill="#ffffff"/>
+<text x="750.00" y="45.00" text-anchor="middle" font-size="22" font-weight="700">Summary of Results</text>
+<text x="750.00" y="68.00" text-anchor="middle" font-size="12">Graph 10</text>
+<text x="255.00" y="133.00" text-anchor="middle" font-size="13" font-weight="700">Mean P&amp;L ($)</text>
+<rect x="85.00" y="152.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="215.00" y="152.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="345.00" y="152.00" width="100" height="160" fill="#f7f7f5"/>
+<line x1="80" y1="312.00" x2="450" y2="312.00" class="guide"/>
+<text x="75.00" y="315.50" text-anchor="end" font-size="9.5">$0</text>
+<line x1="80" y1="232.00" x2="450" y2="232.00" class="guide"/>
+<text x="75.00" y="235.50" text-anchor="end" font-size="9.5">$15k</text>
+<line x1="80" y1="152.00" x2="450" y2="152.00" class="guide"/>
+<text x="75.00" y="155.50" text-anchor="end" font-size="9.5">$30k</text>
+<line x1="80" y1="152" x2="80" y2="312" class="axis"/>
+<line x1="80" y1="312" x2="450" y2="312" class="axis"/>
+<text x="135.00" y="331.00" text-anchor="middle" font-size="9.5">Volatility shift</text>
+<circle cx="108.00" cy="162.79" r="4.5" fill="#1f4e79"/>
+<text x="108.00" y="174.79" text-anchor="middle" font-size="8.5">$28.0k</text>
+<circle cx="126.00" cy="208.83" r="4.5" fill="#a14c35"/>
+<text x="126.00" y="220.83" text-anchor="middle" font-size="8.5">$19.3k</text>
+<circle cx="144.00" cy="230.25" r="4.5" fill="#536b3b"/>
+<text x="144.00" y="223.25" text-anchor="middle" font-size="8.5">$15.3k</text>
+<circle cx="162.00" cy="229.08" r="4.5" fill="#75567a"/>
+<text x="162.00" y="241.08" text-anchor="middle" font-size="8.5">$15.5k</text>
+<text x="265.00" y="331.00" text-anchor="middle" font-size="9.5">Heavy-tail</text>
+<circle cx="238.00" cy="163.76" r="4.5" fill="#1f4e79"/>
+<text x="238.00" y="175.76" text-anchor="middle" font-size="8.5">$27.8k</text>
+<circle cx="256.00" cy="206.87" r="4.5" fill="#a14c35"/>
+<text x="256.00" y="218.87" text-anchor="middle" font-size="8.5">$19.7k</text>
+<circle cx="274.00" cy="229.65" r="4.5" fill="#536b3b"/>
+<text x="274.00" y="222.65" text-anchor="middle" font-size="8.5">$15.4k</text>
+<circle cx="292.00" cy="228.27" r="4.5" fill="#75567a"/>
+<text x="292.00" y="240.27" text-anchor="middle" font-size="8.5">$15.7k</text>
+<text x="395.00" y="331.00" text-anchor="middle" font-size="9.5">Cointegration break</text>
+<circle cx="368.00" cy="201.94" r="4.5" fill="#1f4e79"/>
+<text x="368.00" y="194.94" text-anchor="middle" font-size="8.5">$20.6k</text>
+<circle cx="386.00" cy="242.14" r="4.5" fill="#a14c35"/>
+<text x="386.00" y="254.14" text-anchor="middle" font-size="8.5">$13.1k</text>
+<circle cx="404.00" cy="257.64" r="4.5" fill="#536b3b"/>
+<text x="404.00" y="250.64" text-anchor="middle" font-size="8.5">$10.2k</text>
+<circle cx="422.00" cy="256.51" r="4.5" fill="#75567a"/>
+<text x="422.00" y="268.51" text-anchor="middle" font-size="8.5">$10.4k</text>
+<text x="745.00" y="133.00" text-anchor="middle" font-size="13" font-weight="700">Bottom 5% P&amp;L ($)</text>
+<rect x="575.00" y="152.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="705.00" y="152.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="835.00" y="152.00" width="100" height="160" fill="#f7f7f5"/>
+<line x1="570" y1="312.00" x2="940" y2="312.00" class="guide"/>
+<text x="565.00" y="315.50" text-anchor="end" font-size="9.5">-$10k</text>
+<line x1="570" y1="266.29" x2="940" y2="266.29" class="guide"/>
+<text x="565.00" y="269.79" text-anchor="end" font-size="9.5">$0</text>
+<line x1="570" y1="220.57" x2="940" y2="220.57" class="guide"/>
+<text x="565.00" y="224.07" text-anchor="end" font-size="9.5">$10k</text>
+<line x1="570" y1="174.86" x2="940" y2="174.86" class="guide"/>
+<text x="565.00" y="178.36" text-anchor="end" font-size="9.5">$20k</text>
+<line x1="570" y1="152" x2="570" y2="312" class="axis"/>
+<line x1="570" y1="312" x2="940" y2="312" class="axis"/>
+<text x="625.00" y="331.00" text-anchor="middle" font-size="9.5">Volatility shift</text>
+<circle cx="598.00" cy="168.36" r="4.5" fill="#1f4e79"/>
+<text x="598.00" y="161.36" text-anchor="middle" font-size="8.5">$21.4k</text>
+<circle cx="616.00" cy="201.73" r="4.5" fill="#a14c35"/>
+<text x="616.00" y="213.73" text-anchor="middle" font-size="8.5">$14.1k</text>
+<circle cx="634.00" cy="221.03" r="4.5" fill="#536b3b"/>
+<text x="634.00" y="214.03" text-anchor="middle" font-size="8.5">$9.9k</text>
+<circle cx="652.00" cy="219.61" r="4.5" fill="#75567a"/>
+<text x="652.00" y="231.61" text-anchor="middle" font-size="8.5">$10.2k</text>
+<text x="755.00" y="331.00" text-anchor="middle" font-size="9.5">Heavy-tail</text>
+<circle cx="728.00" cy="164.54" r="4.5" fill="#1f4e79"/>
+<text x="728.00" y="176.54" text-anchor="middle" font-size="8.5">$22.3k</text>
+<circle cx="746.00" cy="198.31" r="4.5" fill="#a14c35"/>
+<text x="746.00" y="210.31" text-anchor="middle" font-size="8.5">$14.9k</text>
+<circle cx="764.00" cy="221.96" r="4.5" fill="#536b3b"/>
+<text x="764.00" y="214.96" text-anchor="middle" font-size="8.5">$9.7k</text>
+<circle cx="782.00" cy="220.75" r="4.5" fill="#75567a"/>
+<text x="782.00" y="232.75" text-anchor="middle" font-size="8.5">$10.0k</text>
+<text x="885.00" y="331.00" text-anchor="middle" font-size="9.5">Cointegration break</text>
+<circle cx="858.00" cy="308.19" r="4.5" fill="#1f4e79"/>
+<text x="858.00" y="301.19" text-anchor="middle" font-size="8.5">-$9.2k</text>
+<circle cx="876.00" cy="241.73" r="4.5" fill="#a14c35"/>
+<text x="876.00" y="253.73" text-anchor="middle" font-size="8.5">$5.4k</text>
+<circle cx="894.00" cy="284.01" r="4.5" fill="#536b3b"/>
+<text x="894.00" y="277.01" text-anchor="middle" font-size="8.5">-$3.9k</text>
+<circle cx="912.00" cy="282.93" r="4.5" fill="#75567a"/>
+<text x="912.00" y="294.93" text-anchor="middle" font-size="8.5">-$3.6k</text>
+<text x="1235.00" y="133.00" text-anchor="middle" font-size="13" font-weight="700">Inventory variance</text>
+<rect x="1065.00" y="152.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="1195.00" y="152.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="1325.00" y="152.00" width="100" height="160" fill="#f7f7f5"/>
+<line x1="1060" y1="312.00" x2="1430" y2="312.00" class="guide"/>
+<text x="1055.00" y="315.50" text-anchor="end" font-size="9.5">0</text>
+<line x1="1060" y1="232.00" x2="1430" y2="232.00" class="guide"/>
+<text x="1055.00" y="235.50" text-anchor="end" font-size="9.5">0.04</text>
+<line x1="1060" y1="152.00" x2="1430" y2="152.00" class="guide"/>
+<text x="1055.00" y="155.50" text-anchor="end" font-size="9.5">0.08</text>
+<line x1="1060" y1="152" x2="1060" y2="312" class="axis"/>
+<line x1="1060" y1="312" x2="1430" y2="312" class="axis"/>
+<text x="1115.00" y="331.00" text-anchor="middle" font-size="9.5">Volatility shift</text>
+<circle cx="1088.00" cy="265.87" r="4.5" fill="#1f4e79"/>
+<text x="1088.00" y="258.87" text-anchor="middle" font-size="8.5">0.0231</text>
+<circle cx="1106.00" cy="291.99" r="4.5" fill="#a14c35"/>
+<text x="1106.00" y="303.99" text-anchor="middle" font-size="8.5">0.0100</text>
+<circle cx="1124.00" cy="251.47" r="4.5" fill="#536b3b"/>
+<text x="1124.00" y="244.47" text-anchor="middle" font-size="8.5">0.0303</text>
+<circle cx="1142.00" cy="250.78" r="4.5" fill="#75567a"/>
+<text x="1142.00" y="262.78" text-anchor="middle" font-size="8.5">0.0306</text>
+<text x="1245.00" y="331.00" text-anchor="middle" font-size="9.5">Heavy-tail</text>
+<circle cx="1218.00" cy="265.56" r="4.5" fill="#1f4e79"/>
+<text x="1218.00" y="258.56" text-anchor="middle" font-size="8.5">0.0232</text>
+<circle cx="1236.00" cy="291.84" r="4.5" fill="#a14c35"/>
+<text x="1236.00" y="303.84" text-anchor="middle" font-size="8.5">0.0101</text>
+<circle cx="1254.00" cy="251.08" r="4.5" fill="#536b3b"/>
+<text x="1254.00" y="244.08" text-anchor="middle" font-size="8.5">0.0305</text>
+<circle cx="1272.00" cy="250.32" r="4.5" fill="#75567a"/>
+<text x="1272.00" y="262.32" text-anchor="middle" font-size="8.5">0.0308</text>
+<text x="1375.00" y="331.00" text-anchor="middle" font-size="9.5">Cointegration break</text>
+<circle cx="1348.00" cy="155.60" r="4.5" fill="#1f4e79"/>
+<text x="1348.00" y="167.60" text-anchor="middle" font-size="8.5">0.0782</text>
+<circle cx="1366.00" cy="291.88" r="4.5" fill="#a14c35"/>
+<text x="1366.00" y="303.88" text-anchor="middle" font-size="8.5">0.0101</text>
+<circle cx="1384.00" cy="222.34" r="4.5" fill="#536b3b"/>
+<text x="1384.00" y="215.34" text-anchor="middle" font-size="8.5">0.0448</text>
+<circle cx="1402.00" cy="221.46" r="4.5" fill="#75567a"/>
+<text x="1402.00" y="233.46" text-anchor="middle" font-size="8.5">0.0453</text>
+<text x="255.00" y="413.00" text-anchor="middle" font-size="13" font-weight="700">Spread capture (%)</text>
+<rect x="85.00" y="432.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="215.00" y="432.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="345.00" y="432.00" width="100" height="160" fill="#f7f7f5"/>
+<line x1="80" y1="592.00" x2="450" y2="592.00" class="guide"/>
+<text x="75.00" y="595.50" text-anchor="end" font-size="9.5">0%</text>
+<line x1="80" y1="512.00" x2="450" y2="512.00" class="guide"/>
+<text x="75.00" y="515.50" text-anchor="end" font-size="9.5">0.4%</text>
+<line x1="80" y1="432.00" x2="450" y2="432.00" class="guide"/>
+<text x="75.00" y="435.50" text-anchor="end" font-size="9.5">0.8%</text>
+<line x1="80" y1="432" x2="80" y2="592" class="axis"/>
+<line x1="80" y1="592" x2="450" y2="592" class="axis"/>
+<text x="135.00" y="611.00" text-anchor="middle" font-size="9.5">Volatility shift</text>
+<circle cx="108.00" cy="469.32" r="4.5" fill="#1f4e79"/>
+<text x="108.00" y="462.32" text-anchor="middle" font-size="8.5">0.613%</text>
+<circle cx="126.00" cy="496.31" r="4.5" fill="#a14c35"/>
+<text x="126.00" y="508.31" text-anchor="middle" font-size="8.5">0.478%</text>
+<circle cx="144.00" cy="533.90" r="4.5" fill="#536b3b"/>
+<text x="144.00" y="526.90" text-anchor="middle" font-size="8.5">0.291%</text>
+<circle cx="162.00" cy="531.94" r="4.5" fill="#75567a"/>
+<text x="162.00" y="543.94" text-anchor="middle" font-size="8.5">0.300%</text>
+<text x="265.00" y="611.00" text-anchor="middle" font-size="9.5">Heavy-tail</text>
+<circle cx="238.00" cy="469.30" r="4.5" fill="#1f4e79"/>
+<text x="238.00" y="462.30" text-anchor="middle" font-size="8.5">0.614%</text>
+<circle cx="256.00" cy="492.98" r="4.5" fill="#a14c35"/>
+<text x="256.00" y="504.98" text-anchor="middle" font-size="8.5">0.495%</text>
+<circle cx="274.00" cy="531.14" r="4.5" fill="#536b3b"/>
+<text x="274.00" y="524.14" text-anchor="middle" font-size="8.5">0.304%</text>
+<circle cx="292.00" cy="529.22" r="4.5" fill="#75567a"/>
+<text x="292.00" y="541.22" text-anchor="middle" font-size="8.5">0.314%</text>
+<text x="395.00" y="611.00" text-anchor="middle" font-size="9.5">Cointegration break</text>
+<circle cx="368.00" cy="461.21" r="4.5" fill="#1f4e79"/>
+<text x="368.00" y="454.21" text-anchor="middle" font-size="8.5">0.654%</text>
+<circle cx="386.00" cy="517.21" r="4.5" fill="#a14c35"/>
+<text x="386.00" y="529.21" text-anchor="middle" font-size="8.5">0.374%</text>
+<circle cx="404.00" cy="537.16" r="4.5" fill="#536b3b"/>
+<text x="404.00" y="530.16" text-anchor="middle" font-size="8.5">0.274%</text>
+<circle cx="422.00" cy="535.75" r="4.5" fill="#75567a"/>
+<text x="422.00" y="547.75" text-anchor="middle" font-size="8.5">0.281%</text>
+<text x="745.00" y="413.00" text-anchor="middle" font-size="13" font-weight="700">Quote/fill proxy</text>
+<rect x="575.00" y="432.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="705.00" y="432.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="835.00" y="432.00" width="100" height="160" fill="#f7f7f5"/>
+<line x1="570" y1="592.00" x2="940" y2="592.00" class="guide"/>
+<text x="565.00" y="595.50" text-anchor="end" font-size="9.5">0</text>
+<line x1="570" y1="512.00" x2="940" y2="512.00" class="guide"/>
+<text x="565.00" y="515.50" text-anchor="end" font-size="9.5">2</text>
+<line x1="570" y1="432.00" x2="940" y2="432.00" class="guide"/>
+<text x="565.00" y="435.50" text-anchor="end" font-size="9.5">4</text>
+<line x1="570" y1="432" x2="570" y2="592" class="axis"/>
+<line x1="570" y1="592" x2="940" y2="592" class="axis"/>
+<text x="625.00" y="611.00" text-anchor="middle" font-size="9.5">Volatility shift</text>
+<circle cx="598.00" cy="466.31" r="4.5" fill="#1f4e79"/>
+<text x="598.00" y="459.31" text-anchor="middle" font-size="8.5">3.14</text>
+<circle cx="616.00" cy="465.67" r="4.5" fill="#a14c35"/>
+<text x="616.00" y="477.67" text-anchor="middle" font-size="8.5">3.16</text>
+<circle cx="634.00" cy="470.84" r="4.5" fill="#536b3b"/>
+<text x="634.00" y="463.84" text-anchor="middle" font-size="8.5">3.03</text>
+<circle cx="652.00" cy="470.69" r="4.5" fill="#75567a"/>
+<text x="652.00" y="482.69" text-anchor="middle" font-size="8.5">3.03</text>
+<text x="755.00" y="611.00" text-anchor="middle" font-size="9.5">Heavy-tail</text>
+<circle cx="728.00" cy="466.40" r="4.5" fill="#1f4e79"/>
+<text x="728.00" y="459.40" text-anchor="middle" font-size="8.5">3.14</text>
+<circle cx="746.00" cy="465.86" r="4.5" fill="#a14c35"/>
+<text x="746.00" y="477.86" text-anchor="middle" font-size="8.5">3.15</text>
+<circle cx="764.00" cy="471.27" r="4.5" fill="#536b3b"/>
+<text x="764.00" y="464.27" text-anchor="middle" font-size="8.5">3.02</text>
+<circle cx="782.00" cy="471.11" r="4.5" fill="#75567a"/>
+<text x="782.00" y="483.11" text-anchor="middle" font-size="8.5">3.02</text>
+<text x="885.00" y="611.00" text-anchor="middle" font-size="9.5">Cointegration break</text>
+<circle cx="858.00" cy="464.72" r="4.5" fill="#1f4e79"/>
+<text x="858.00" y="457.72" text-anchor="middle" font-size="8.5">3.18</text>
+<circle cx="876.00" cy="466.16" r="4.5" fill="#a14c35"/>
+<text x="876.00" y="478.16" text-anchor="middle" font-size="8.5">3.15</text>
+<circle cx="894.00" cy="470.55" r="4.5" fill="#536b3b"/>
+<text x="894.00" y="463.55" text-anchor="middle" font-size="8.5">3.04</text>
+<circle cx="912.00" cy="470.45" r="4.5" fill="#75567a"/>
+<text x="912.00" y="482.45" text-anchor="middle" font-size="8.5">3.04</text>
+<text x="1235.00" y="413.00" text-anchor="middle" font-size="13" font-weight="700">Mean drawdown (%)</text>
+<rect x="1065.00" y="432.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="1195.00" y="432.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="1325.00" y="432.00" width="100" height="160" fill="#f7f7f5"/>
+<line x1="1060" y1="592.00" x2="1430" y2="592.00" class="guide"/>
+<text x="1055.00" y="595.50" text-anchor="end" font-size="9.5">0%</text>
+<line x1="1060" y1="512.00" x2="1430" y2="512.00" class="guide"/>
+<text x="1055.00" y="515.50" text-anchor="end" font-size="9.5">4%</text>
+<line x1="1060" y1="432.00" x2="1430" y2="432.00" class="guide"/>
+<text x="1055.00" y="435.50" text-anchor="end" font-size="9.5">8%</text>
+<line x1="1060" y1="432" x2="1060" y2="592" class="axis"/>
+<line x1="1060" y1="592" x2="1430" y2="592" class="axis"/>
+<text x="1115.00" y="611.00" text-anchor="middle" font-size="9.5">Volatility shift</text>
+<circle cx="1088.00" cy="567.65" r="4.5" fill="#1f4e79"/>
+<text x="1088.00" y="560.65" text-anchor="middle" font-size="8.5">1.218%</text>
+<circle cx="1106.00" cy="578.66" r="4.5" fill="#a14c35"/>
+<text x="1106.00" y="571.66" text-anchor="middle" font-size="8.5">0.667%</text>
+<circle cx="1124.00" cy="570.64" r="4.5" fill="#536b3b"/>
+<text x="1124.00" y="563.64" text-anchor="middle" font-size="8.5">1.068%</text>
+<circle cx="1142.00" cy="570.55" r="4.5" fill="#75567a"/>
+<text x="1142.00" y="582.55" text-anchor="middle" font-size="8.5">1.073%</text>
+<text x="1245.00" y="611.00" text-anchor="middle" font-size="9.5">Heavy-tail</text>
+<circle cx="1218.00" cy="565.50" r="4.5" fill="#1f4e79"/>
+<text x="1218.00" y="558.50" text-anchor="middle" font-size="8.5">1.325%</text>
+<circle cx="1236.00" cy="577.40" r="4.5" fill="#a14c35"/>
+<text x="1236.00" y="589.40" text-anchor="middle" font-size="8.5">0.730%</text>
+<circle cx="1254.00" cy="568.12" r="4.5" fill="#536b3b"/>
+<text x="1254.00" y="561.12" text-anchor="middle" font-size="8.5">1.194%</text>
+<circle cx="1272.00" cy="568.19" r="4.5" fill="#75567a"/>
+<text x="1272.00" y="580.19" text-anchor="middle" font-size="8.5">1.190%</text>
+<text x="1375.00" y="611.00" text-anchor="middle" font-size="9.5">Cointegration break</text>
+<circle cx="1348.00" cy="446.65" r="4.5" fill="#1f4e79"/>
+<text x="1348.00" y="458.65" text-anchor="middle" font-size="8.5">7.268%</text>
+<circle cx="1366.00" cy="556.09" r="4.5" fill="#a14c35"/>
+<text x="1366.00" y="568.09" text-anchor="middle" font-size="8.5">1.795%</text>
+<circle cx="1384.00" cy="517.49" r="4.5" fill="#536b3b"/>
+<text x="1384.00" y="510.49" text-anchor="middle" font-size="8.5">3.725%</text>
+<circle cx="1402.00" cy="517.49" r="4.5" fill="#75567a"/>
+<text x="1402.00" y="529.49" text-anchor="middle" font-size="8.5">3.726%</text>
+<text x="255.00" y="693.00" text-anchor="middle" font-size="13" font-weight="700">95th percentile drawdown (%)</text>
+<rect x="85.00" y="712.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="215.00" y="712.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="345.00" y="712.00" width="100" height="160" fill="#f7f7f5"/>
+<line x1="80" y1="872.00" x2="450" y2="872.00" class="guide"/>
+<text x="75.00" y="875.50" text-anchor="end" font-size="9.5">0%</text>
+<line x1="80" y1="792.00" x2="450" y2="792.00" class="guide"/>
+<text x="75.00" y="795.50" text-anchor="end" font-size="9.5">10%</text>
+<line x1="80" y1="712.00" x2="450" y2="712.00" class="guide"/>
+<text x="75.00" y="715.50" text-anchor="end" font-size="9.5">20%</text>
+<line x1="80" y1="712" x2="80" y2="872" class="axis"/>
+<line x1="80" y1="872" x2="450" y2="872" class="axis"/>
+<text x="135.00" y="891.00" text-anchor="middle" font-size="9.5">Volatility shift</text>
+<circle cx="108.00" cy="852.63" r="4.5" fill="#1f4e79"/>
+<text x="108.00" y="845.63" text-anchor="middle" font-size="8.5">2.422%</text>
+<circle cx="126.00" cy="862.92" r="4.5" fill="#a14c35"/>
+<text x="126.00" y="855.92" text-anchor="middle" font-size="8.5">1.135%</text>
+<circle cx="144.00" cy="859.69" r="4.5" fill="#536b3b"/>
+<text x="144.00" y="852.69" text-anchor="middle" font-size="8.5">1.539%</text>
+<circle cx="162.00" cy="859.53" r="4.5" fill="#75567a"/>
+<text x="162.00" y="852.53" text-anchor="middle" font-size="8.5">1.558%</text>
+<text x="265.00" y="891.00" text-anchor="middle" font-size="9.5">Heavy-tail</text>
+<circle cx="238.00" cy="846.77" r="4.5" fill="#1f4e79"/>
+<text x="238.00" y="839.77" text-anchor="middle" font-size="8.5">3.154%</text>
+<circle cx="256.00" cy="860.28" r="4.5" fill="#a14c35"/>
+<text x="256.00" y="853.28" text-anchor="middle" font-size="8.5">1.465%</text>
+<circle cx="274.00" cy="853.67" r="4.5" fill="#536b3b"/>
+<text x="274.00" y="846.67" text-anchor="middle" font-size="8.5">2.292%</text>
+<circle cx="292.00" cy="853.86" r="4.5" fill="#75567a"/>
+<text x="292.00" y="865.86" text-anchor="middle" font-size="8.5">2.267%</text>
+<text x="395.00" y="891.00" text-anchor="middle" font-size="9.5">Cointegration break</text>
+<circle cx="368.00" cy="714.73" r="4.5" fill="#1f4e79"/>
+<text x="368.00" y="726.73" text-anchor="middle" font-size="8.5">19.659%</text>
+<circle cx="386.00" cy="836.05" r="4.5" fill="#a14c35"/>
+<text x="386.00" y="848.05" text-anchor="middle" font-size="8.5">4.494%</text>
+<circle cx="404.00" cy="797.48" r="4.5" fill="#536b3b"/>
+<text x="404.00" y="790.48" text-anchor="middle" font-size="8.5">9.315%</text>
+<circle cx="422.00" cy="799.51" r="4.5" fill="#75567a"/>
+<text x="422.00" y="811.51" text-anchor="middle" font-size="8.5">9.061%</text>
+<text x="745.00" y="693.00" text-anchor="middle" font-size="13" font-weight="700">Drawdown duration (steps)</text>
+<rect x="575.00" y="712.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="705.00" y="712.00" width="100" height="160" fill="#f7f7f5"/>
+<rect x="835.00" y="712.00" width="100" height="160" fill="#f7f7f5"/>
+<line x1="570" y1="872.00" x2="940" y2="872.00" class="guide"/>
+<text x="565.00" y="875.50" text-anchor="end" font-size="9.5">0</text>
+<line x1="570" y1="792.00" x2="940" y2="792.00" class="guide"/>
+<text x="565.00" y="795.50" text-anchor="end" font-size="9.5">80</text>
+<line x1="570" y1="712.00" x2="940" y2="712.00" class="guide"/>
+<text x="565.00" y="715.50" text-anchor="end" font-size="9.5">160</text>
+<line x1="570" y1="712" x2="570" y2="872" class="axis"/>
+<line x1="570" y1="872" x2="940" y2="872" class="axis"/>
+<text x="625.00" y="891.00" text-anchor="middle" font-size="9.5">Volatility shift</text>
+<circle cx="598.00" cy="852.21" r="4.5" fill="#1f4e79"/>
+<text x="598.00" y="845.21" text-anchor="middle" font-size="8.5">19.8</text>
+<circle cx="616.00" cy="839.57" r="4.5" fill="#a14c35"/>
+<text x="616.00" y="851.57" text-anchor="middle" font-size="8.5">32.4</text>
+<circle cx="634.00" cy="827.23" r="4.5" fill="#536b3b"/>
+<text x="634.00" y="820.23" text-anchor="middle" font-size="8.5">44.8</text>
+<circle cx="652.00" cy="826.72" r="4.5" fill="#75567a"/>
+<text x="652.00" y="838.72" text-anchor="middle" font-size="8.5">45.3</text>
+<text x="755.00" y="891.00" text-anchor="middle" font-size="9.5">Heavy-tail</text>
+<circle cx="728.00" cy="851.85" r="4.5" fill="#1f4e79"/>
+<text x="728.00" y="844.85" text-anchor="middle" font-size="8.5">20.1</text>
+<circle cx="746.00" cy="840.15" r="4.5" fill="#a14c35"/>
+<text x="746.00" y="852.15" text-anchor="middle" font-size="8.5">31.8</text>
+<circle cx="764.00" cy="821.58" r="4.5" fill="#536b3b"/>
+<text x="764.00" y="814.58" text-anchor="middle" font-size="8.5">50.4</text>
+<circle cx="782.00" cy="822.05" r="4.5" fill="#75567a"/>
+<text x="782.00" y="834.05" text-anchor="middle" font-size="8.5">49.9</text>
+<text x="885.00" y="891.00" text-anchor="middle" font-size="9.5">Cointegration break</text>
+<circle cx="858.00" cy="789.73" r="4.5" fill="#1f4e79"/>
+<text x="858.00" y="782.73" text-anchor="middle" font-size="8.5">82.3</text>
+<circle cx="876.00" cy="744.61" r="4.5" fill="#a14c35"/>
+<text x="876.00" y="756.61" text-anchor="middle" font-size="8.5">127.4</text>
+<circle cx="894.00" cy="728.77" r="4.5" fill="#536b3b"/>
+<text x="894.00" y="721.77" text-anchor="middle" font-size="8.5">143.2</text>
+<circle cx="912.00" cy="729.21" r="4.5" fill="#75567a"/>
+<text x="912.00" y="741.21" text-anchor="middle" font-size="8.5">142.8</text>
+<text x="1235.00" y="693.00" text-anchor="middle" font-size="13" font-weight="700">HJB residual</text>
+<line x1="1090.00" y1="712" x2="1090.00" y2="872" class="guide"/>
+<text x="1090.00" y="892.00" text-anchor="middle" font-size="8.5">0.006260</text>
+<line x1="1203.33" y1="712" x2="1203.33" y2="872" class="guide"/>
+<text x="1203.33" y="892.00" text-anchor="middle" font-size="8.5">0.006265</text>
+<line x1="1316.67" y1="712" x2="1316.67" y2="872" class="guide"/>
+<text x="1316.67" y="892.00" text-anchor="middle" font-size="8.5">0.006270</text>
+<line x1="1430.00" y1="712" x2="1430.00" y2="872" class="guide"/>
+<text x="1430.00" y="892.00" text-anchor="middle" font-size="8.5">0.006275</text>
+<line x1="1090" y1="872" x2="1430" y2="872" class="axis"/>
+<text x="1023.00" y="770.00" font-size="10">No fee</text>
+<circle cx="1203.21" cy="767" r="4.5" fill="#536b3b"/>
+<text x="1203.21" y="759.00" text-anchor="middle" font-size="8.5">0.006265</text>
+<text x="1023.00" y="823.00" font-size="10">Fee-aware</text>
+<circle cx="1295.76" cy="820" r="4.5" fill="#75567a"/>
+<text x="1295.76" y="812.00" text-anchor="middle" font-size="8.5">0.006269</text>
+<rect x="1190" y="925" width="270" height="105" fill="#ffffff" stroke="#404040" stroke-width="1"/>
+<circle cx="1205" cy="940" r="5" fill="#1f4e79"/>
+<text x="1218.00" y="944.00" font-size="11.5">Threshold, no AKF</text>
+<circle cx="1205" cy="963" r="5" fill="#a14c35"/>
+<text x="1218.00" y="967.00" font-size="11.5">Threshold + AKF</text>
+<circle cx="1205" cy="986" r="5" fill="#536b3b"/>
+<text x="1218.00" y="990.00" font-size="11.5">HJB-PINN, no fee + AKF</text>
+<circle cx="1205" cy="1009" r="5" fill="#75567a"/>
+<text x="1218.00" y="1013.00" font-size="11.5">HJB-PINN, fee-aware + AKF</text>
+</svg>
