@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="630" viewBox="0 0 1000 630" role="img" aria-labelledby="title description">
+  <title id="title">Lower-tail P&amp;L distribution</title>
+  <desc id="description">P&amp;L quantiles from the lowest ten percent of 250 simulation runs per scenario and controller. Markers show the fifth percentile.</desc>
+  <style>
+    text { font-family: "Times New Roman", Georgia, serif; fill: #202020; }
+    .axis { stroke: #303030; stroke-width: 1; }
+    .guide { stroke: #dedede; stroke-width: 1; }
+    .cutoff { stroke: #777777; stroke-width: 1.2; stroke-dasharray: 4 4; }
+  </style>
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="500" y="42" text-anchor="middle" font-size="22" font-weight="700">Lower-tail P&amp;L distribution</text>
+  <text x="500" y="65" text-anchor="middle" font-size="12">Graph 11</text>
+  <text x="222.5" y="94" text-anchor="middle" font-size="14" font-weight="700">Volatility shift</text>
+  <rect x="100" y="110" width="245" height="310" fill="#f7f7f5"/>
+  <rect x="100" y="110" width="122.50" height="310" fill="#efeee9"/>
+  <line x1="100" y1="366.32" x2="345" y2="366.32" class="guide"/>
+  <text x="92" y="370.32" text-anchor="end" font-size="10.5">$10.0k</text>
+  <line x1="100" y1="279.05" x2="345" y2="279.05" class="guide"/>
+  <text x="92" y="283.05" text-anchor="end" font-size="10.5">$15.0k</text>
+  <line x1="100" y1="191.79" x2="345" y2="191.79" class="guide"/>
+  <text x="92" y="195.79" text-anchor="end" font-size="10.5">$20.0k</text>
+  <line x1="222.50" y1="110" x2="222.50" y2="420" class="cutoff"/>
+  <line x1="100" y1="420" x2="345" y2="420" class="axis"/>
+  <line x1="100" y1="110" x2="100" y2="420" class="axis"/>
+  <line x1="100.00" y1="420" x2="100.00" y2="424" class="axis"/>
+  <text x="100.00" y="437" text-anchor="middle" font-size="10.5">0</text>
+  <line x1="149.00" y1="420" x2="149.00" y2="424" class="axis"/>
+  <text x="149.00" y="437" text-anchor="middle" font-size="10.5">2</text>
+  <line x1="198.00" y1="420" x2="198.00" y2="424" class="axis"/>
+  <text x="198.00" y="437" text-anchor="middle" font-size="10.5">4</text>
+  <line x1="247.00" y1="420" x2="247.00" y2="424" class="axis"/>
+  <text x="247.00" y="437" text-anchor="middle" font-size="10.5">6</text>
+  <line x1="296.00" y1="420" x2="296.00" y2="424" class="axis"/>
+  <text x="296.00" y="437" text-anchor="middle" font-size="10.5">8</text>
+  <line x1="345.00" y1="420" x2="345.00" y2="424" class="axis"/>
+  <text x="345.00" y="437" text-anchor="middle" font-size="10.5">10</text>
+  <path d="M 100.00 220.63 L 124.50 177.51 L 149.00 163.23 L 173.50 157.63 L 198.00 150.85 L 222.50 145.11 L 247.00 137.50 L 271.50 135.69 L 296.00 131.69 L 320.50 129.19 L 345.00 126.61" fill="none" stroke="#1f4e79" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="222.50" cy="145.11" r="4.2" fill="#1f4e79" stroke="#ffffff" stroke-width="1"/>
+  <text x="229.50" y="135.11" text-anchor="start" font-size="10.5" fill="#1f4e79">$22.7k</text>
+  <path d="M 100.00 332.45 L 124.50 313.63 L 149.00 293.98 L 173.50 280.86 L 198.00 275.62 L 222.50 274.55 L 247.00 270.36 L 271.50 268.19 L 296.00 267.59 L 320.50 265.47 L 345.00 261.50" fill="none" stroke="#a14c35" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="222.50" cy="274.55" r="4.2" fill="#a14c35" stroke="#ffffff" stroke-width="1"/>
+  <text x="215.50" y="288.55" text-anchor="end" font-size="10.5" fill="#a14c35">$15.3k</text>
+  <path d="M 100.00 403.39 L 124.50 375.17 L 149.00 370.38 L 173.50 364.26 L 198.00 353.44 L 222.50 351.78 L 247.00 346.07 L 271.50 341.07 L 296.00 337.13 L 320.50 333.78 L 345.00 330.79" fill="none" stroke="#536b3b" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="222.50" cy="351.78" r="4.2" fill="#536b3b" stroke="#ffffff" stroke-width="1"/>
+  <text x="229.50" y="341.78" text-anchor="start" font-size="10.5" fill="#536b3b">$10.8k</text>
+  <path d="M 100.00 388.25 L 124.50 373.22 L 149.00 362.81 L 173.50 355.06 L 198.00 349.47 L 222.50 347.94 L 247.00 347.06 L 271.50 341.25 L 296.00 336.34 L 320.50 332.70 L 345.00 331.78" fill="none" stroke="#75567a" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="222.50" cy="347.94" r="4.2" fill="#75567a" stroke="#ffffff" stroke-width="1"/>
+  <text x="215.50" y="361.94" text-anchor="end" font-size="10.5" fill="#75567a">$11.1k</text>
+  <text x="522.5" y="94" text-anchor="middle" font-size="14" font-weight="700">Heavy-tail</text>
+  <rect x="400" y="110" width="245" height="310" fill="#f7f7f5"/>
+  <rect x="400" y="110" width="122.50" height="310" fill="#efeee9"/>
+  <line x1="400" y1="350.06" x2="645" y2="350.06" class="guide"/>
+  <text x="392" y="354.06" text-anchor="end" font-size="10.5">$10.0k</text>
+  <line x1="400" y1="270.50" x2="645" y2="270.50" class="guide"/>
+  <text x="392" y="274.50" text-anchor="end" font-size="10.5">$15.0k</text>
+  <line x1="400" y1="190.94" x2="645" y2="190.94" class="guide"/>
+  <text x="392" y="194.94" text-anchor="end" font-size="10.5">$20.0k</text>
+  <line x1="400" y1="111.38" x2="645" y2="111.38" class="guide"/>
+  <text x="392" y="115.38" text-anchor="end" font-size="10.5">$25.0k</text>
+  <line x1="522.50" y1="110" x2="522.50" y2="420" class="cutoff"/>
+  <line x1="400" y1="420" x2="645" y2="420" class="axis"/>
+  <line x1="400" y1="110" x2="400" y2="420" class="axis"/>
+  <line x1="400.00" y1="420" x2="400.00" y2="424" class="axis"/>
+  <text x="400.00" y="437" text-anchor="middle" font-size="10.5">0</text>
+  <line x1="449.00" y1="420" x2="449.00" y2="424" class="axis"/>
+  <text x="449.00" y="437" text-anchor="middle" font-size="10.5">2</text>
+  <line x1="498.00" y1="420" x2="498.00" y2="424" class="axis"/>
+  <text x="498.00" y="437" text-anchor="middle" font-size="10.5">4</text>
+  <line x1="547.00" y1="420" x2="547.00" y2="424" class="axis"/>
+  <text x="547.00" y="437" text-anchor="middle" font-size="10.5">6</text>
+  <line x1="596.00" y1="420" x2="596.00" y2="424" class="axis"/>
+  <text x="596.00" y="437" text-anchor="middle" font-size="10.5">8</text>
+  <line x1="645.00" y1="420" x2="645.00" y2="424" class="axis"/>
+  <text x="645.00" y="437" text-anchor="middle" font-size="10.5">10</text>
+  <path d="M 400.00 199.54 L 424.50 159.15 L 449.00 152.13 L 473.50 148.86 L 498.00 145.75 L 522.50 140.71 L 547.00 136.43 L 571.50 134.76 L 596.00 131.97 L 620.50 128.84 L 645.00 126.61" fill="none" stroke="#1f4e79" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="522.50" cy="140.71" r="4.2" fill="#1f4e79" stroke="#ffffff" stroke-width="1"/>
+  <text x="529.50" y="130.71" text-anchor="start" font-size="10.5" fill="#1f4e79">$23.2k</text>
+  <path d="M 400.00 293.20 L 424.50 283.18 L 449.00 270.60 L 473.50 266.72 L 498.00 261.55 L 522.50 258.12 L 547.00 255.78 L 571.50 252.00 L 596.00 248.77 L 620.50 242.83 L 645.00 241.22" fill="none" stroke="#a14c35" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="522.50" cy="258.12" r="4.2" fill="#a14c35" stroke="#ffffff" stroke-width="1"/>
+  <text x="515.50" y="272.12" text-anchor="end" font-size="10.5" fill="#a14c35">$15.8k</text>
+  <path d="M 400.00 403.39 L 424.50 367.67 L 449.00 352.43 L 473.50 340.60 L 498.00 338.94 L 522.50 328.62 L 547.00 322.39 L 571.50 321.21 L 596.00 319.70 L 620.50 317.79 L 645.00 314.75" fill="none" stroke="#536b3b" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="522.50" cy="328.62" r="4.2" fill="#536b3b" stroke="#ffffff" stroke-width="1"/>
+  <text x="529.50" y="318.62" text-anchor="start" font-size="10.5" fill="#536b3b">$11.3k</text>
+  <path d="M 400.00 393.83 L 424.50 359.06 L 449.00 344.06 L 473.50 340.48 L 498.00 334.54 L 522.50 327.72 L 547.00 321.99 L 571.50 316.02 L 596.00 313.15 L 620.50 310.22 L 645.00 309.44" fill="none" stroke="#75567a" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="522.50" cy="327.72" r="4.2" fill="#75567a" stroke="#ffffff" stroke-width="1"/>
+  <text x="515.50" y="341.72" text-anchor="end" font-size="10.5" fill="#75567a">$11.4k</text>
+  <text x="822.5" y="94" text-anchor="middle" font-size="14" font-weight="700">Cointegration break</text>
+  <rect x="700" y="110" width="245" height="310" fill="#f7f7f5"/>
+  <rect x="700" y="110" width="122.50" height="310" fill="#efeee9"/>
+  <line x1="700" y1="365.76" x2="945" y2="365.76" class="guide"/>
+  <text x="692" y="369.76" text-anchor="end" font-size="10.5">-$30.0k</text>
+  <line x1="700" y1="302.97" x2="945" y2="302.97" class="guide"/>
+  <text x="692" y="306.97" text-anchor="end" font-size="10.5">-$20.0k</text>
+  <line x1="700" y1="240.19" x2="945" y2="240.19" class="guide"/>
+  <text x="692" y="244.19" text-anchor="end" font-size="10.5">-$10.0k</text>
+  <line x1="700" y1="177.40" x2="945" y2="177.40" class="guide"/>
+  <text x="692" y="181.40" text-anchor="end" font-size="10.5">$0</text>
+  <line x1="700" y1="114.62" x2="945" y2="114.62" class="guide"/>
+  <text x="692" y="118.62" text-anchor="end" font-size="10.5">$10.0k</text>
+  <line x1="822.50" y1="110" x2="822.50" y2="420" class="cutoff"/>
+  <line x1="700" y1="420" x2="945" y2="420" class="axis"/>
+  <line x1="700" y1="110" x2="700" y2="420" class="axis"/>
+  <line x1="700.00" y1="420" x2="700.00" y2="424" class="axis"/>
+  <text x="700.00" y="437" text-anchor="middle" font-size="10.5">0</text>
+  <line x1="749.00" y1="420" x2="749.00" y2="424" class="axis"/>
+  <text x="749.00" y="437" text-anchor="middle" font-size="10.5">2</text>
+  <line x1="798.00" y1="420" x2="798.00" y2="424" class="axis"/>
+  <text x="798.00" y="437" text-anchor="middle" font-size="10.5">4</text>
+  <line x1="847.00" y1="420" x2="847.00" y2="424" class="axis"/>
+  <text x="847.00" y="437" text-anchor="middle" font-size="10.5">6</text>
+  <line x1="896.00" y1="420" x2="896.00" y2="424" class="axis"/>
+  <text x="896.00" y="437" text-anchor="middle" font-size="10.5">8</text>
+  <line x1="945.00" y1="420" x2="945.00" y2="424" class="axis"/>
+  <text x="945.00" y="437" text-anchor="middle" font-size="10.5">10</text>
+  <path d="M 700.00 403.39 L 724.50 269.57 L 749.00 221.64 L 773.50 208.12 L 798.00 171.81 L 822.50 166.38 L 847.00 156.58 L 871.50 152.00 L 896.00 146.29 L 920.50 138.55 L 945.00 126.61" fill="none" stroke="#1f4e79" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="822.50" cy="166.38" r="4.2" fill="#1f4e79" stroke="#ffffff" stroke-width="1"/>
+  <text x="829.50" y="156.38" text-anchor="start" font-size="10.5" fill="#1f4e79">$1.8k</text>
+  <path d="M 700.00 174.14 L 724.50 144.32 L 749.00 142.67 L 773.50 140.73 L 798.00 136.28 L 822.50 134.61 L 847.00 132.62 L 871.50 131.41 L 896.00 130.32 L 920.50 127.54 L 945.00 126.79" fill="none" stroke="#a14c35" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="822.50" cy="134.61" r="4.2" fill="#a14c35" stroke="#ffffff" stroke-width="1"/>
+  <text x="815.50" y="148.61" text-anchor="end" font-size="10.5" fill="#a14c35">$6.8k</text>
+  <path d="M 700.00 278.35 L 724.50 215.02 L 749.00 203.59 L 773.50 189.12 L 798.00 176.78 L 822.50 169.99 L 847.00 162.82 L 871.50 158.60 L 896.00 156.66 L 920.50 154.70 L 945.00 153.76" fill="none" stroke="#536b3b" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="822.50" cy="169.99" r="4.2" fill="#536b3b" stroke="#ffffff" stroke-width="1"/>
+  <text x="829.50" y="159.99" text-anchor="start" font-size="10.5" fill="#536b3b">$1.2k</text>
+  <path d="M 700.00 270.97 L 724.50 215.10 L 749.00 199.99 L 773.50 189.14 L 798.00 176.24 L 822.50 168.40 L 847.00 162.43 L 871.50 159.05 L 896.00 157.01 L 920.50 154.88 L 945.00 152.96" fill="none" stroke="#75567a" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="822.50" cy="168.40" r="4.2" fill="#75567a" stroke="#ffffff" stroke-width="1"/>
+  <text x="815.50" y="182.40" text-anchor="end" font-size="10.5" fill="#75567a">$1.4k</text>
+  <text x="24" y="265" text-anchor="middle" font-size="13" transform="rotate(-90 24 265)">P&amp;L ($)</text>
+  <text x="500" y="462" text-anchor="middle" font-size="13">P&amp;L percentile (%)</text>
+  <rect x="322" y="478" width="356" height="126" fill="#ffffff" stroke="#404040" stroke-width="1"/>
+  <line x1="340" y1="497" x2="363" y2="497" stroke="#1f4e79" stroke-width="2"/>
+  <circle cx="351.5" cy="497" r="3.5" fill="#1f4e79"/>
+  <text x="372" y="501" font-size="11.5">Threshold, no AKF</text>
+  <line x1="340" y1="521" x2="363" y2="521" stroke="#a14c35" stroke-width="2"/>
+  <circle cx="351.5" cy="521" r="3.5" fill="#a14c35"/>
+  <text x="372" y="525" font-size="11.5">Threshold + AKF</text>
+  <line x1="340" y1="545" x2="363" y2="545" stroke="#536b3b" stroke-width="2"/>
+  <circle cx="351.5" cy="545" r="3.5" fill="#536b3b"/>
+  <text x="372" y="549" font-size="11.5">HJB no-fee + AKF</text>
+  <line x1="340" y1="569" x2="363" y2="569" stroke="#75567a" stroke-width="2"/>
+  <circle cx="351.5" cy="569" r="3.5" fill="#75567a"/>
+  <text x="372" y="573" font-size="11.5">HJB fee-aware + AKF</text>
+</svg>
